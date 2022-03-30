@@ -9,7 +9,7 @@ import client.Principal;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import model.Solve;
-import utils.FicheroUtil;
+import utilities.FicheroUtil;
 
 /**
  *

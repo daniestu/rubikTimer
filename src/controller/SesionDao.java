@@ -12,8 +12,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import model.Sesion;
 import model.Solve;
-import utils.FicheroUtil;
-import utils.PrincipalUtil;
+import utilities.FicheroUtil;
+import utilities.PrincipalUtil;
 
 /**
  *

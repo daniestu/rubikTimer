@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileWriter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import utils.PrincipalUtil;
+import utilities.PrincipalUtil;
 
 /**
  *

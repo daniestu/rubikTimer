@@ -40,9 +40,9 @@ import controller.SesionDao;
 import controller.SolveDao;
 import model.Sesion;
 import model.Solve;
-import utils.CronometroUtil;
-import utils.FicheroUtil;
-import utils.PrincipalUtil;
+import utilities.CronometroUtil;
+import utilities.FicheroUtil;
+import utilities.PrincipalUtil;
 
 /**
  *
