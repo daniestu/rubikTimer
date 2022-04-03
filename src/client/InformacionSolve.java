@@ -8,8 +8,11 @@ package client;
 import controller.SesionDao;
 import controller.SolveDao;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import model.Solve;
@@ -25,6 +28,8 @@ public class InformacionSolve extends JFrame{
         this.solve = solve;
         
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
         
         this.setUndecorated(true);
         this.setVisible(true);
@@ -142,8 +147,8 @@ public class InformacionSolve extends JFrame{
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 740, 400));
         
         t_id.setText(solve.getNum()+"");
-        t_fecha.setText(solve.getFecha());
-        t_hora.setText(solve.getHora());
+        t_fecha.setText(formatoFecha.format(solve.getFecha()));
+        t_hora.setText(formatoHora.format(solve.getFecha()));
         t_scramble.setText(solve.getScramble());
         t_tiempo.setText(solve.getTiempo());
         
@@ -154,10 +159,15 @@ public class InformacionSolve extends JFrame{
         try {
             SolveDao.eliminar(solve);
             SesionDao.cargarSesion();
-        } catch (IOException ex) {
+        } catch (IOException | ParseException ex) {
             ex.printStackTrace();
         }
-        this.dispose();
+        Frame f[] = JFrame.getFrames();
+        for (Frame i : f) {
+            if ( !(i.getTitle().equals("Rubik Timer")) ) {
+                i.dispose();
+            }
+        }
     }                                        
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {

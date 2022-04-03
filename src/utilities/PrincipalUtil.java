@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.ComboBoxModel;
+import model.AVG;
 import model.Solve;
 
 /**
@@ -113,8 +114,9 @@ public class PrincipalUtil {
         }
     }
     
-    public static String mejorAVG(int num) {
+    public static AVG mejorAVG(int num) {
         ArrayList <Solve> al = new ArrayList();
+        ArrayList <Solve> alMejores = new ArrayList();
         int suma;
         String mejoravg = "";
         
@@ -126,17 +128,20 @@ public class PrincipalUtil {
                 suma = al.stream().map((j) -> convertirTiempoMs(j.getTiempo())).reduce(suma, Integer::sum);
                 if (esMejorTiempo(mejoravg, convertirMsTiempo(suma/num))) {
                     mejoravg = convertirMsTiempo(suma/num);
+                    alMejores = new ArrayList<Solve>(al);
                 }
             }else{
                 if (al.size()==num) {
                     suma = al.stream().map((j) -> convertirTiempoMs(j.getTiempo())).reduce(suma, Integer::sum);
                     mejoravg = convertirMsTiempo(suma/num);
+                    alMejores = new ArrayList<Solve>(al);
                 }
             }
         }
-        
-        return mejoravg;
+        AVG avg = new AVG(mejoravg, alMejores);
+        return avg;
     }
+    
     public static ComboBoxModel cargarModeloComboBox() {
         int cont = 0;
         String sesiones[];

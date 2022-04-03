@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFrame;
@@ -291,7 +292,7 @@ public class Preferencias extends JFrame {
         
         try {
             SesionDao.cargarSesion();
-        } catch (IOException ex) {
+        } catch (IOException | ParseException ex) {
             ex.printStackTrace();
         }
         

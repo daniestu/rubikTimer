@@ -38,6 +38,8 @@ import model.Cubo;
 import controller.CuboDao;
 import controller.SesionDao;
 import controller.SolveDao;
+import java.text.ParseException;
+import model.AVG;
 import model.Sesion;
 import model.Solve;
 import utilities.CronometroUtil;
@@ -73,7 +75,7 @@ public final class Principal extends JFrame implements KeyListener {
     private boolean sufic = false;
     public static Solve mejor;
     public static Solve peor;
-    public static String avg, currentAo5, currentAo12, currentAo100;
+    public static AVG avg = new AVG("", new ArrayList<Solve>()), currentAo5 = new AVG("", new ArrayList<Solve>()), currentAo12 = new AVG("", new ArrayList<Solve>()), currentAo100 = new AVG("", new ArrayList<Solve>());
     public Timer t, t2, t3, t4;
     public static int m, s, cs, ms;
     public static String movimientos[] = {"R2", "U2", "L2", "D2", "F2", "B2", "R", "U", "L", "D", "F", "B", "R'", "U'", "L'", "D'", "F'", "B'"};
@@ -488,7 +490,7 @@ public final class Principal extends JFrame implements KeyListener {
         Listado.setEnabled(true);
         Listado.setFocusable(false);
         Listado.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        Listado.setModel(SolveDao.cargarSolves());
+        Listado.setModel(SolveDao.cargarSolves(solves, 0));
         Listado.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -573,7 +575,9 @@ public final class Principal extends JFrame implements KeyListener {
         l_best_2.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                l_best_2MouseClicked(evt);
+                if ( !(l_best_2.getText().equals("")) ) {
+                    l_best_2MouseClicked(evt);
+                }
             }
         });
 
@@ -585,7 +589,10 @@ public final class Principal extends JFrame implements KeyListener {
         l_worst_2.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                l_worst_2MouseClicked(evt);
+                if ( !(l_worst_2.getText().equals("")) ) {
+                    l_worst_2MouseClicked(evt);
+                }
+                
             }
         });
         
@@ -594,18 +601,71 @@ public final class Principal extends JFrame implements KeyListener {
         l_ao5.setBorder(compoundLeft);
         l_ao5_2.setFont(new java.awt.Font("Times New Roman", 0, 26));
         l_ao5_2.setBorder(compoundRight);
+        l_ao5_2.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if ( !(l_ao5_2.getText().equals("")) ) {
+                    l_ao5_2MouseClicked(evt);
+                }
+            }
+
+            private void l_ao5_2MouseClicked(MouseEvent evt) {
+                Frame f[] = JFrame.getFrames();
+                for (Frame i : f) {
+                    if (i.getTitle().equals("Información AVG")) {
+                        i.dispose();
+                    }
+                }
+                InformacionAVG informacionAVG = new InformacionAVG(currentAo5);
+            }
+        });
 
         l_ao12.setFont(new java.awt.Font("Times New Roman", 1, 26));
         l_ao12.setText(" Ao12");
         l_ao12.setBorder(compoundLeft);
         l_ao12_2.setFont(new java.awt.Font("Times New Roman", 0, 26));
         l_ao12_2.setBorder(compoundRight);
+        l_ao12_2.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if ( !(l_ao12_2.getText().equals("")) ) {
+                    l_ao12_2MouseClicked(evt);
+                }
+            }
 
+            private void l_ao12_2MouseClicked(MouseEvent evt) {
+                Frame f[] = JFrame.getFrames();
+                for (Frame i : f) {
+                    if (i.getTitle().equals("Información AVG")) {
+                        i.dispose();
+                    }
+                }
+                InformacionAVG informacionAVG = new InformacionAVG(currentAo12);
+            }
+        });
         l_ao100.setFont(new java.awt.Font("Times New Roman", 1, 26));
         l_ao100.setText(" Ao100");
         l_ao100.setBorder(compoundLeft);
         l_ao100_2.setFont(new java.awt.Font("Times New Roman", 0, 26));
         l_ao100_2.setBorder(compoundRight);
+        l_ao100_2.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if ( !(l_ao100_2.getText().equals("")) ) {
+                    l_ao100_2MouseClicked(evt);
+                }
+            }
+
+            private void l_ao100_2MouseClicked(MouseEvent evt) {
+                Frame f[] = JFrame.getFrames();
+                for (Frame i : f) {
+                    if (i.getTitle().equals("Información AVG")) {
+                        i.dispose();
+                    }
+                }
+                InformacionAVG informacionAVG = new InformacionAVG(currentAo100);
+            }
+        });
 
         l_totalavg.setFont(new java.awt.Font("Times New Roman", 1, 26));
         l_totalavg.setText(" Media");
@@ -844,7 +904,7 @@ public final class Principal extends JFrame implements KeyListener {
 
         try {
             SesionDao.cargarSesion();
-        } catch (IOException ex) {
+        } catch (IOException | ParseException ex) {
             ex.printStackTrace();
         }
     }
@@ -897,7 +957,7 @@ public final class Principal extends JFrame implements KeyListener {
         t_tiempo.setText("00:00:00");
         try {
             SesionDao.cargarSesion();
-        } catch (IOException ex) {
+        } catch (IOException | ParseException ex) {
             ex.printStackTrace();
         }
     }
@@ -973,10 +1033,10 @@ public final class Principal extends JFrame implements KeyListener {
                 int linea = FicheroUtil.establecerLinea(ficheroSesion);
                 fw.write(linea + ";" + l_scramble.getText() + ";" + formatoFecha.format(fecha) + ";" + formatoHora.format(fecha) + ";" + t_tiempo.getText() + "\n");
                 fw.close();
-                solves.add(new Solve(linea, l_scramble.getText(), formatoFecha.format(fecha), formatoHora.format(fecha), t_tiempo.getText()));
-                Listado.setModel(SolveDao.cargarSolves());
+                solves.add(new Solve(linea, l_scramble.getText(), fecha, t_tiempo.getText()));
+                Listado.setModel(SolveDao.cargarSolves(solves, 0));
                 SesionDao.cargarSesion();
-            } catch (IOException ex) {
+            } catch (IOException | ParseException ex) {
                 ex.printStackTrace();
             }
 

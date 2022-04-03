@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import model.Solve;
 
 /**
@@ -47,6 +48,8 @@ public class FicheroUtil {
     }
     
     public static void rehacerFichero() {
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
         int cont = 0;
         for (Solve i : Principal.solves) {
             cont++;
@@ -55,7 +58,7 @@ public class FicheroUtil {
         try {
             FileWriter fw = new FileWriter(Principal.ficheroSesion);
             for (Solve i : Principal.solves) {
-                fw.write(i.getNum() + ";" + i.getScramble() + ";" + i.getFecha() + ";" + i.getHora() + ";" + i.getTiempo() + "\n");
+                fw.write(i.getNum() + ";" + i.getScramble() + ";" + formatoFecha.format(i.getFecha()) + ";" + formatoHora.format(i.getFecha()) + ";" + i.getTiempo() + "\n");
             }
             fw.close();
         } catch (IOException ex) {

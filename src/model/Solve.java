@@ -5,15 +5,16 @@
  */
 package model;
 
+import java.util.Date;
+
 /**
  *
  * @author Dani
  */
-public class Solve {
+public class Solve implements Comparable<Solve>{
     private Integer num;
     private String scramble;
-    private String fecha;
-    private String hora;
+    private Date fecha;
     private String tiempo;
 
     public Integer getNum() {
@@ -32,20 +33,12 @@ public class Solve {
         this.scramble = scramble;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
-    }
-
-    public String getHora() {
-        return hora;
-    }
-
-    public void setHora(String hora) {
-        this.hora = hora;
     }
 
     public String getTiempo() {
@@ -56,13 +49,16 @@ public class Solve {
         this.tiempo = tiempo;
     }
 
-    public Solve(Integer num, String scramble, String fecha, String hora, String tiempo) {
+    public Solve(Integer num, String scramble, Date fecha, String tiempo) {
         this.num = num;
         this.scramble = scramble;
         this.fecha = fecha;
-        this.hora = hora;
         this.tiempo = tiempo;
     }
-    
-    
+
+    @Override
+    public int compareTo(Solve o) {
+        return this.fecha.compareTo(o.fecha);
+    }
+
 }

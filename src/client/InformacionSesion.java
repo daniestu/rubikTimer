@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -116,6 +117,14 @@ public class InformacionSesion extends JFrame{
         t_avg.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_avg.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
         t_avg.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_avg.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if ( !(t_avg.getText().equals("")) ) {
+                    t_avgMouseClicked(evt);
+                }
+            }
+        });
         jPanel1.add(t_avg, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 280, 130, -1));
 
         l_avg.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
@@ -132,7 +141,10 @@ public class InformacionSesion extends JFrame{
         t_peor.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                t_peorMouseClicked(evt);
+                if ( !(t_peor.getText().equals("")) ) {
+                    t_peorMouseClicked(evt);
+                }
+                
             }
         });
         jPanel1.add(t_peor, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 240, 130, -1));
@@ -152,7 +164,10 @@ public class InformacionSesion extends JFrame{
         t_mejor.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                t_mejorMouseClicked(evt);
+                if ( !(t_mejor.getText().equals("")) ) {
+                    t_mejorMouseClicked(evt);
+                }
+                
             }
         });
         
@@ -176,6 +191,14 @@ public class InformacionSesion extends JFrame{
         t_cao5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_cao5.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
         t_cao5.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_cao5.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if ( !(t_cao5.getText().equals("")) ) {
+                    t_cao5MouseClicked(evt);
+                }
+            }
+        });
         jPanel1.add(t_cao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 320, 130, -1));
         
         l_cao12.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
@@ -189,6 +212,14 @@ public class InformacionSesion extends JFrame{
         t_cao12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_cao12.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
         t_cao12.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_cao12.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if ( !(t_cao12.getText().equals("")) ) {
+                    t_cao12MouseClicked(evt);
+                }
+            }
+        });
         jPanel1.add(t_cao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 360, 130, -1));
         
         l_cao100.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
@@ -202,6 +233,14 @@ public class InformacionSesion extends JFrame{
         t_cao100.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_cao100.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
         t_cao100.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_cao100.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if ( !(t_cao100.getText().equals("")) ) {
+                    t_cao100MouseClicked(evt);
+                }
+            }
+        });
         jPanel1.add(t_cao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 400, 130, -1));
         
         l_bao5.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
@@ -215,6 +254,14 @@ public class InformacionSesion extends JFrame{
         t_bao5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_bao5.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
         t_bao5.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_bao5.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if ( !(t_bao5.getText().equals("")) ) {
+                    t_bao5MouseClicked(evt);
+                }
+            }
+        });
         jPanel1.add(t_bao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 440, 130, -1));
         
         l_bao12.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
@@ -228,6 +275,14 @@ public class InformacionSesion extends JFrame{
         t_bao12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_bao12.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
         t_bao12.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_bao12.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if ( !(t_bao12.getText().equals("")) ) {
+                    t_bao12MouseClicked(evt);
+                }
+            }
+        });
         jPanel1.add(t_bao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 480, 130, -1));
         
         l_bao100.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
@@ -241,6 +296,14 @@ public class InformacionSesion extends JFrame{
         t_bao100.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_bao100.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
         t_bao100.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_bao100.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if ( !(t_bao100.getText().equals("")) ) {
+                    t_bao100MouseClicked(evt);
+                }
+            }
+        });
         jPanel1.add(t_bao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 520, 130, -1));
         
         
@@ -283,13 +346,13 @@ public class InformacionSesion extends JFrame{
         t_total.setText(sesion.getTotalSolves()+"");
         t_mejor.setText(sesion.getMejor().getTiempo());
         t_peor.setText(sesion.getPeor().getTiempo());
-        t_avg.setText(sesion.getAvg());
-        t_bao5.setText(sesion.getBestAo5());
-        t_bao12.setText(sesion.getBestAo12());
-        t_bao100.setText(sesion.getBestAo100());
-        t_cao5.setText(sesion.getCurrentAo5());
-        t_cao12.setText(sesion.getCurrentAo12());
-        t_cao100.setText(sesion.getCurrentAo100());
+        t_avg.setText(sesion.getAvg().getTiempo());
+        t_bao5.setText(sesion.getBestAo5().getTiempo());
+        t_bao12.setText(sesion.getBestAo12().getTiempo());
+        t_bao100.setText(sesion.getBestAo100().getTiempo());
+        t_cao5.setText(sesion.getCurrentAo5().getTiempo());
+        t_cao12.setText(sesion.getCurrentAo12().getTiempo());
+        t_cao100.setText(sesion.getCurrentAo100().getTiempo());
         pack();
         setLocationRelativeTo(null);
     }
@@ -312,7 +375,77 @@ public class InformacionSesion extends JFrame{
             }
         }
         InformacionSolve informacionSolve = new InformacionSolve(sesion.getPeor());
-    } 
+    }
+    
+    private void t_bao5MouseClicked(MouseEvent evt) {
+        Frame f[] = JFrame.getFrames();
+        for (Frame i : f) {
+            if (i.getTitle().equals("Información AVG")) {
+                i.dispose();
+            }
+        }
+        InformacionAVG informacionAVG = new InformacionAVG(sesion.getBestAo5());
+    }
+    
+    private void t_bao12MouseClicked(MouseEvent evt) {
+        Frame f[] = JFrame.getFrames();
+        for (Frame i : f) {
+            if (i.getTitle().equals("Información AVG")) {
+                i.dispose();
+            }
+        }
+        InformacionAVG informacionAVG = new InformacionAVG(sesion.getBestAo12());
+    }
+    
+    private void t_bao100MouseClicked(MouseEvent evt) {
+        Frame f[] = JFrame.getFrames();
+        for (Frame i : f) {
+            if (i.getTitle().equals("Información AVG")) {
+                i.dispose();
+            }
+        }
+        InformacionAVG informacionAVG = new InformacionAVG(sesion.getBestAo100());
+    }
+    
+    private void t_cao5MouseClicked(MouseEvent evt) {
+        Frame f[] = JFrame.getFrames();
+        for (Frame i : f) {
+            if (i.getTitle().equals("Información AVG")) {
+                i.dispose();
+            }
+        }
+        InformacionAVG informacionAVG = new InformacionAVG(sesion.getCurrentAo5());
+    }
+    
+    private void t_cao12MouseClicked(MouseEvent evt) {
+        Frame f[] = JFrame.getFrames();
+        for (Frame i : f) {
+            if (i.getTitle().equals("Información AVG")) {
+                i.dispose();
+            }
+        }
+        InformacionAVG informacionAVG = new InformacionAVG(sesion.getCurrentAo12());
+    }
+    
+    private void t_cao100MouseClicked(MouseEvent evt) {
+        Frame f[] = JFrame.getFrames();
+        for (Frame i : f) {
+            if (i.getTitle().equals("Información AVG")) {
+                i.dispose();
+            }
+        }
+        InformacionAVG informacionAVG = new InformacionAVG(sesion.getCurrentAo100());
+    }
+    
+    private void t_avgMouseClicked(MouseEvent evt) {
+        Frame f[] = JFrame.getFrames();
+        for (Frame i : f) {
+            if (i.getTitle().equals("Información AVG")) {
+                i.dispose();
+            }
+        }
+        InformacionAVG informacionAVG = new InformacionAVG(sesion.getAvg());
+    }
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt){
         if (!Principal.ficheroSesion.delete()) {
@@ -343,7 +476,7 @@ public class InformacionSesion extends JFrame{
             Principal.jComboBox1.setSelectedItem(Principal.ficheroSesion.getName());
             
             Principal.t_tiempo.setText("00:00:00");
-        } catch (IOException ex) {
+        } catch (IOException | ParseException ex) {
             ex.printStackTrace();
         }
         this.dispose();
@@ -361,7 +494,7 @@ public class InformacionSesion extends JFrame{
                     SesionDao.cargarSesion();
                     Principal.jComboBox1.setModel(PrincipalUtil.cargarModeloComboBox());
                     Principal.jComboBox1.setSelectedItem(Principal.ficheroSesion.getName());
-                } catch (IOException ex) {
+                } catch (IOException | ParseException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -394,7 +527,7 @@ public class InformacionSesion extends JFrame{
                         SesionDao.cargarSesion();
                         Principal.jComboBox1.setModel(PrincipalUtil.cargarModeloComboBox());
                         Principal.jComboBox1.setSelectedItem(Principal.ficheroSesion.getName());
-                    } catch (IOException ex) {
+                    } catch (IOException | ParseException ex) {
                         ex.printStackTrace();
                     }
                 }

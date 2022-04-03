@@ -13,14 +13,14 @@ public class Sesion {
     private String nombre;
     private Solve mejor;
     private Solve peor;
-    private String avg;
-    private String bestAo5;
-    private String bestAo12;
-    private String bestAo100;
-    private String currentAo5;
-    private String currentAo12;
-    private String currentAo100;
-    int totalSolves;
+    private AVG avg;
+    private AVG bestAo5;
+    private AVG bestAo12;
+    private AVG bestAo100;
+    private AVG currentAo5;
+    private AVG currentAo12;
+    private AVG currentAo100;
+    private int totalSolves;
 
     public String getNombre() {
         return nombre;
@@ -46,60 +46,60 @@ public class Sesion {
         this.peor = peor;
     }
 
-    public String getAvg() {
+    public AVG getAvg() {
         return avg;
     }
 
-    public void setAvg(String avg) {
+    public void setAvg(AVG avg) {
         this.avg = avg;
     }
 
-    public String getBestAo5() {
+    public AVG getBestAo5() {
         return bestAo5;
     }
 
-    public void setBestAo5(String bestAo5) {
+    public void setBestAo5(AVG bestAo5) {
         this.bestAo5 = bestAo5;
     }
 
-    public String getBestAo12() {
+    public AVG getBestAo12() {
         return bestAo12;
     }
 
-    public void setBestAo12(String bestAo12) {
+    public void setBestAo12(AVG bestAo12) {
         this.bestAo12 = bestAo12;
     }
 
-    public String getBestAo100() {
+    public AVG getBestAo100() {
         return bestAo100;
     }
 
-    public void setBestAo100(String bestAo100) {
+    public void setBestAo100(AVG bestAo100) {
         this.bestAo100 = bestAo100;
     }
 
-    public String getCurrentAo5() {
+    public AVG getCurrentAo5() {
         return currentAo5;
     }
 
-    public void setCurrentAo5(String currentA05) {
-        this.currentAo5 = currentA05;
+    public void setCurrentAo5(AVG currentAo5) {
+        this.currentAo5 = currentAo5;
     }
 
-    public String getCurrentAo12() {
+    public AVG getCurrentAo12() {
         return currentAo12;
     }
 
-    public void setCurrentAo12(String currentAo12) {
+    public void setCurrentAo12(AVG currentAo12) {
         this.currentAo12 = currentAo12;
     }
 
-    public String getCurrentAo100() {
+    public AVG getCurrentAo100() {
         return currentAo100;
     }
 
-    public void setCurrentAo100(String currentA0100) {
-        this.currentAo100 = currentA0100;
+    public void setCurrentAo100(AVG currentAo100) {
+        this.currentAo100 = currentAo100;
     }
 
     public int getTotalSolves() {
@@ -110,7 +110,7 @@ public class Sesion {
         this.totalSolves = totalSolves;
     }
 
-    public Sesion(String nombre, Solve mejor, Solve peor, String avg, String bestAo5, String bestAo12, String bestAo100, String currentA05, String currentAo12, String currentA0100, int totalSolves) {
+    public Sesion(String nombre, Solve mejor, Solve peor, AVG avg, AVG bestAo5, AVG bestAo12, AVG bestAo100, AVG currentAo5, AVG currentAo12, AVG currentAo100, int totalSolves) {
         this.nombre = nombre;
         this.mejor = mejor;
         this.peor = peor;
@@ -118,9 +118,11 @@ public class Sesion {
         this.bestAo5 = bestAo5;
         this.bestAo12 = bestAo12;
         this.bestAo100 = bestAo100;
-        this.currentAo5 = currentA05;
+        this.currentAo5 = currentAo5;
         this.currentAo12 = currentAo12;
-        this.currentAo100 = currentA0100;
+        this.currentAo100 = currentAo100;
         this.totalSolves = totalSolves;
     }
+
+    
 }
