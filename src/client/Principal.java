@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package client;
 
 import java.awt.Color;
@@ -131,7 +126,7 @@ public final class Principal extends JFrame implements KeyListener {
         try {
             init();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un preblema al arrancar la aplicación", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un problema al arrancar la aplicación", "ERROR", JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
         }
         
@@ -1036,6 +1031,7 @@ public final class Principal extends JFrame implements KeyListener {
                 solves.add(new Solve(linea, l_scramble.getText(), fecha, t_tiempo.getText()));
                 Listado.setModel(SolveDao.cargarSolves(solves, 0));
                 SesionDao.cargarSesion();
+                Listado.ensureIndexIsVisible(Listado.getModel().getSize() - 1);
             } catch (IOException | ParseException ex) {
                 ex.printStackTrace();
             }
@@ -1044,7 +1040,7 @@ public final class Principal extends JFrame implements KeyListener {
             l_scramble.setText(scram);
             Cubo c = CuboDao.generarCubo(scram);
             CuboDao.establecerCubo(c);
-
+            corriendo = false;
         } else {
             m = 0;
             s = 0;

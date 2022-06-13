@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package client;
 
 import controller.SesionDao;
@@ -492,8 +487,6 @@ public class InformacionSesion extends JFrame{
                 Principal.ficheroSesion = new File("sesiones/"+t_nombre.getText());
                 try {
                     SesionDao.cargarSesion();
-                    Principal.jComboBox1.setModel(PrincipalUtil.cargarModeloComboBox());
-                    Principal.jComboBox1.setSelectedItem(Principal.ficheroSesion.getName());
                 } catch (IOException | ParseException ex) {
                     ex.printStackTrace();
                 }
