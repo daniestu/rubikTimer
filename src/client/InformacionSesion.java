@@ -487,6 +487,10 @@ public class InformacionSesion extends JFrame{
                 Principal.ficheroSesion = new File("sesiones/"+t_nombre.getText());
                 try {
                     SesionDao.cargarSesion();
+                    String tiempo = Principal.t_tiempo.getText();
+                    Principal.jComboBox1.setModel(PrincipalUtil.cargarModeloComboBox());
+                    Principal.jComboBox1.setSelectedItem(Principal.ficheroSesion.getName());
+                    Principal.t_tiempo.setText(tiempo);
                 } catch (IOException | ParseException ex) {
                     ex.printStackTrace();
                 }
