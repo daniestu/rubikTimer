@@ -83,24 +83,35 @@ public class SesionDao {
         
         if (!Principal.solves.isEmpty()) {
             ArrayList<Solve> al = new ArrayList<Solve>();
+            String mejorTiempo = Principal.solves.get(Principal.solves.size()-1).getTiempo();
+            String peorTiempo = Principal.solves.get(Principal.solves.size()-1).getTiempo();
             for (int i = Principal.solves.size() - 1; i >= 0; i--) {
+                if (PrincipalUtil.esMejorTiempo(mejorTiempo, Principal.solves.get(i).getTiempo())) {
+                    mejorTiempo = Principal.solves.get(i).getTiempo();
+                }
+                if (PrincipalUtil.esPeorTiempo(peorTiempo, Principal.solves.get(i).getTiempo())) {
+                    peorTiempo = Principal.solves.get(i).getTiempo();
+                }
                 al.add(Principal.solves.get(i));
                 cont++;
                 suma += PrincipalUtil.convertirTiempoMs(Principal.solves.get(i).getTiempo());
 
                 if (cont == 5) {
                     Collections.sort(al);
-                    Principal.currentAo5 = new AVG(PrincipalUtil.convertirMsTiempo(suma / 5), new ArrayList<Solve>(al));
+                    int suma5 = suma - ( (PrincipalUtil.convertirTiempoMs(mejorTiempo)) + (PrincipalUtil.convertirTiempoMs(peorTiempo)) );
+                    Principal.currentAo5 = new AVG(PrincipalUtil.convertirMsTiempo(suma5 / 3), new ArrayList<Solve>(al));
                     Principal.l_ao5_2.setText(Principal.currentAo5.getTiempo());
                 }
                 if (cont == 12) {
                     Collections.sort(al);
-                    Principal.currentAo12 = new AVG(PrincipalUtil.convertirMsTiempo(suma / 12), new ArrayList<Solve>(al));
+                    int suma12 = suma - ( (PrincipalUtil.convertirTiempoMs(mejorTiempo)) + (PrincipalUtil.convertirTiempoMs(peorTiempo)) );
+                    Principal.currentAo12 = new AVG(PrincipalUtil.convertirMsTiempo(suma12 / 10), new ArrayList<Solve>(al));
                     Principal.l_ao12_2.setText(Principal.currentAo12.getTiempo());
                 }
                 if (cont == 100) {
                     Collections.sort(al);
-                    Principal.currentAo100 = new AVG(PrincipalUtil.convertirMsTiempo(suma / 100), new ArrayList<Solve>(al));
+                    int suma100 = suma - ( (PrincipalUtil.convertirTiempoMs(mejorTiempo)) + (PrincipalUtil.convertirTiempoMs(peorTiempo)) );
+                    Principal.currentAo100 = new AVG(PrincipalUtil.convertirMsTiempo(suma100 / 98), new ArrayList<Solve>(al));
                     Principal.l_ao100_2.setText(Principal.currentAo100.getTiempo());
                 }
                 if (i == 0) {

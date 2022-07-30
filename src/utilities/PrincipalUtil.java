@@ -125,15 +125,37 @@ public class PrincipalUtil {
             suma=0;
             if (al.size()==num+1) {
                 al.remove(0);
-                suma = al.stream().map((j) -> convertirTiempoMs(j.getTiempo())).reduce(suma, Integer::sum);
-                if (esMejorTiempo(mejoravg, convertirMsTiempo(suma/num))) {
-                    mejoravg = convertirMsTiempo(suma/num);
+                String mejorTiempo = al.get(0).getTiempo();
+                String peorTiempo = al.get(0).getTiempo();
+                for (Solve j : al) {
+                    if (esMejorTiempo(mejorTiempo, j.getTiempo())) {
+                        mejorTiempo = j.getTiempo();
+                    }
+                    if (esPeorTiempo(peorTiempo, j.getTiempo())) {
+                        peorTiempo = j.getTiempo();
+                    }
+                    suma += convertirTiempoMs(j.getTiempo());
+                }
+                suma = suma - (convertirTiempoMs(mejorTiempo) + convertirTiempoMs(peorTiempo) );
+                if (esMejorTiempo(mejoravg, convertirMsTiempo(suma/(num - 2)))) {
+                    mejoravg = convertirMsTiempo(suma/(num - 2));
                     alMejores = new ArrayList<Solve>(al);
                 }
             }else{
                 if (al.size()==num) {
-                    suma = al.stream().map((j) -> convertirTiempoMs(j.getTiempo())).reduce(suma, Integer::sum);
-                    mejoravg = convertirMsTiempo(suma/num);
+                    String mejorTiempo = al.get(0).getTiempo();
+                    String peorTiempo = al.get(0).getTiempo();
+                    for (Solve j : al) {
+                        if (esMejorTiempo(mejorTiempo, j.getTiempo())) {
+                        mejorTiempo = j.getTiempo();
+                        }
+                        if (esPeorTiempo(peorTiempo, j.getTiempo())) {
+                            peorTiempo = j.getTiempo();
+                        }
+                        suma += convertirTiempoMs(j.getTiempo());
+                    }
+                    suma = suma - (convertirTiempoMs(mejorTiempo) + convertirTiempoMs(peorTiempo) );
+                    mejoravg = convertirMsTiempo(suma/(num - 2));
                     alMejores = new ArrayList<Solve>(al);
                 }
             }

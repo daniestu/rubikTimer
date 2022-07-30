@@ -18,10 +18,10 @@ import utilities.PrincipalUtil;
  *
  * @author Dani
  */
-public class NombreSesion extends JFrame{
+public class NuevaSesion extends JFrame{
     
     
-    NombreSesion(){
+    NuevaSesion(){
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         this.setUndecorated(true);
         this.setVisible(true);

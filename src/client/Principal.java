@@ -15,10 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Properties;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -192,6 +189,7 @@ public final class Principal extends JFrame implements KeyListener {
         jMenuMinimizar = new javax.swing.JMenu();
         jMenuLogo = new javax.swing.JMenu();
         m_new = new javax.swing.JMenuItem();
+        m_add = new javax.swing.JMenuItem();
         m_info = new javax.swing.JMenuItem();
         m_sig = new javax.swing.JMenuItem();
         m_ant = new javax.swing.JMenuItem();
@@ -322,7 +320,19 @@ public final class Principal extends JFrame implements KeyListener {
                     i.dispose();
                 }
             }
-            NombreSesion nombreSesion = new NombreSesion();
+            NuevaSesion nombreSesion = new NuevaSesion();
+        });
+        m_add.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
+        m_add.setText("Agregar tiempo");
+        m_add.setFont(new java.awt.Font("Segoe UI", 0, 20));
+        m_add.addActionListener((java.awt.event.ActionEvent evt) -> {
+            Frame f[] = JFrame.getFrames();
+            for (Frame i : f) {
+                if (i.getTitle().equals("Agregar tiempo")) {
+                    i.dispose();
+                }
+            }
+            NuevoSolve nuevoSolve = new NuevoSolve();
         });
         m_info.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         m_info.setText("Información de la sesión");
@@ -355,7 +365,7 @@ public final class Principal extends JFrame implements KeyListener {
             Cubo c = CuboDao.generarCubo(scram);
             CuboDao.establecerCubo(c);
         });
-        m_ant.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
+        m_ant.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
         m_ant.setText("Mezcla Anterior");
         m_ant.setFont(new java.awt.Font("Segoe UI", 0, 20));
         m_ant.setEnabled(false);
@@ -383,8 +393,9 @@ public final class Principal extends JFrame implements KeyListener {
             Preferencias preferencias = new Preferencias();
         });
 
-        jMenu1.add(m_sig);
         jMenu1.add(m_ant);
+        jMenu1.add(m_sig);
+        jMenu1.add(m_add);
         jMenu1.add(m_new);
         jMenu1.add(m_info);
         jMenu1.add(m_pref);
@@ -1020,18 +1031,7 @@ public final class Principal extends JFrame implements KeyListener {
             jMenu1.setEnabled(true);
 
             try {
-                Date fecha = new Date();
-                DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-                DateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
-
-                FileWriter fw = new FileWriter(ficheroSesion, true);
-                int linea = FicheroUtil.establecerLinea(ficheroSesion);
-                fw.write(linea + ";" + l_scramble.getText() + ";" + formatoFecha.format(fecha) + ";" + formatoHora.format(fecha) + ";" + t_tiempo.getText() + "\n");
-                fw.close();
-                solves.add(new Solve(linea, l_scramble.getText(), fecha, t_tiempo.getText()));
-                Listado.setModel(SolveDao.cargarSolves(solves, 0));
-                SesionDao.cargarSesion();
-                Listado.ensureIndexIsVisible(Listado.getModel().getSize() - 1);
+                FicheroUtil.actualizarFichero(t_tiempo.getText(), l_scramble.getText());
             } catch (IOException | ParseException ex) {
                 ex.printStackTrace();
             }
@@ -1160,6 +1160,7 @@ public final class Principal extends JFrame implements KeyListener {
     public javax.swing.JMenu jMenuCerrar;
     public javax.swing.JMenuBar jMenuBar1;
     public javax.swing.JMenuItem m_new;
+    public javax.swing.JMenuItem m_add;
     public javax.swing.JMenuItem m_info;
     public javax.swing.JMenuItem m_cerrar;
     public javax.swing.JMenuItem jMenuMinimizar;

@@ -124,7 +124,7 @@ public class InformacionSesion extends JFrame{
 
         l_avg.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
         l_avg.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        l_avg.setText("AVG:");
+        l_avg.setText("Media:");
         l_avg.setPreferredSize(new java.awt.Dimension(60, 25));
         jPanel1.add(l_avg, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 140, -1));
 
