@@ -31,10 +31,10 @@ public class SesionDao {
         AVG bestAo5 = PrincipalUtil.mejorAVG(5);
         AVG bestAo12 = PrincipalUtil.mejorAVG(12);
         AVG bestAo100 = PrincipalUtil.mejorAVG(100);
-        
+        double desviacion = calcularDesviacion(Principal.solves, Principal.avg.getTiempo());
         int totalSolves = Principal.solves.size();
         
-        return new Sesion(nombre, Principal.mejor, Principal.peor, Principal.avg, bestAo5, bestAo12, bestAo100, Principal.currentAo5, Principal.currentAo12, Principal.currentAo100, totalSolves);
+        return new Sesion(nombre, Principal.mejor, Principal.peor, Principal.avg, desviacion, bestAo5, bestAo12, bestAo100, Principal.currentAo5, Principal.currentAo12, Principal.currentAo100, totalSolves);
     }
     
     public static void cargarSesion() throws FileNotFoundException, IOException, ParseException {
@@ -191,5 +191,24 @@ public class SesionDao {
             Principal.jPanelPreview.setVisible(true);
         }
         
+        PrincipalUtil.actualizarTema(Principal.tema, 0);
+        
+    }
+
+    private static double calcularDesviacion(ArrayList<Solve> solves, String avg) {
+        int suma = 0, media = PrincipalUtil.convertirTiempoMs(avg);
+        double diferencia;
+        for (Solve i : solves) {
+            if (media < PrincipalUtil.convertirTiempoMs(i.getTiempo())) {
+                diferencia = PrincipalUtil.convertirTiempoMs(i.getTiempo()) - media;
+            }else{
+                diferencia = media - PrincipalUtil.convertirTiempoMs(i.getTiempo());
+            }
+            
+            suma += (diferencia*diferencia);
+        }
+        suma = suma / (solves.size()-1);
+        diferencia = Math.sqrt(suma)/100;
+        return Math.round(diferencia*100.0)/100.0;
     }
 }

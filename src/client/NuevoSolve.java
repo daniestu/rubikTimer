@@ -9,6 +9,7 @@ import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import utilities.FicheroUtil;
+import utilities.PrincipalUtil;
 import utilities.TextPrompt;
 
 /**
@@ -134,6 +135,7 @@ public class NuevoSolve extends JFrame{
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 610, 280));
 
+        PrincipalUtil.actualizarTema(Principal.tema, 5);
         pack();
         setLocationRelativeTo(null);
     }
@@ -224,16 +226,16 @@ public class NuevoSolve extends JFrame{
         this.dispose();
     }
     
-    private final javax.swing.JLabel jLabel1;
-    private final javax.swing.JLabel jLabel2;
-    private final javax.swing.JLabel l_titulo;
-    private final javax.swing.JLabel l_tiempo;
-    private final javax.swing.JLabel l_scramble;
-    private final javax.swing.JPanel jPanel1;
-    private final javax.swing.JTextField t_mm;
-    private final javax.swing.JTextField t_ss;
-    private final javax.swing.JTextField t_ms;
-    private final javax.swing.JTextField t_scramble;
-    private final javax.swing.JButton jButtonAceptar;
-    private final javax.swing.JButton jButtonCancelar;
+    public javax.swing.JLabel jLabel1;
+    public javax.swing.JLabel jLabel2;
+    public static javax.swing.JLabel l_titulo;
+    public static javax.swing.JLabel l_tiempo;
+    public static javax.swing.JLabel l_scramble;
+    public static javax.swing.JPanel jPanel1;
+    public javax.swing.JTextField t_mm;
+    public javax.swing.JTextField t_ss;
+    public javax.swing.JTextField t_ms;
+    public javax.swing.JTextField t_scramble;
+    public javax.swing.JButton jButtonAceptar;
+    public javax.swing.JButton jButtonCancelar;
 }

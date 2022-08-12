@@ -36,6 +36,8 @@ public class InformacionSesion extends JFrame{
         l_nombre = new javax.swing.JLabel();
         t_avg = new javax.swing.JTextField();
         l_avg = new javax.swing.JLabel();
+        t_desv = new javax.swing.JTextField();
+        l_desv = new javax.swing.JLabel();
         t_peor = new javax.swing.JTextField();
         l_peor = new javax.swing.JLabel();
         t_mejor = new javax.swing.JTextField();
@@ -128,6 +130,19 @@ public class InformacionSesion extends JFrame{
         l_avg.setPreferredSize(new java.awt.Dimension(60, 25));
         jPanel1.add(l_avg, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 140, -1));
 
+        t_desv.setEditable(false);
+        t_desv.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        t_desv.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_desv.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
+        t_desv.setPreferredSize(new java.awt.Dimension(60, 25));
+        jPanel1.add(t_desv, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 320, 130, -1));
+
+        l_desv.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_desv.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        l_desv.setText("Desviación:");
+        l_desv.setPreferredSize(new java.awt.Dimension(60, 25));
+        jPanel1.add(l_desv, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 320, 140, -1));
+        
         t_peor.setEditable(false);
         t_peor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_peor.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -179,7 +194,7 @@ public class InformacionSesion extends JFrame{
         l_cao5.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_cao5.setText("Ao5 Actual:");
         l_cao5.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_cao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 320, 140, -1));
+        jPanel1.add(l_cao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 360, 140, -1));
         
         t_cao5.setEditable(false);
         t_cao5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -194,13 +209,13 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_cao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 320, 130, -1));
+        jPanel1.add(t_cao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 360, 130, -1));
         
         l_cao12.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
         l_cao12.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_cao12.setText("Ao12 Actual:");
         l_cao12.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_cao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 360, 140, -1));
+        jPanel1.add(l_cao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 400, 140, -1));
         
         t_cao12.setEditable(false);
         t_cao12.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -215,13 +230,13 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_cao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 360, 130, -1));
+        jPanel1.add(t_cao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 400, 130, -1));
         
         l_cao100.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
         l_cao100.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_cao100.setText("Ao100 Actual:");
         l_cao100.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_cao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 400, 140, -1));
+        jPanel1.add(l_cao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 440, 140, -1));
         
         t_cao100.setEditable(false);
         t_cao100.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -236,13 +251,13 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_cao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 400, 130, -1));
+        jPanel1.add(t_cao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 440, 130, -1));
         
         l_bao5.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
         l_bao5.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_bao5.setText("Mejor Ao5:");
         l_bao5.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_bao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 440, 140, -1));
+        jPanel1.add(l_bao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 480, 140, -1));
         
         t_bao5.setEditable(false);
         t_bao5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -257,13 +272,13 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_bao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 440, 130, -1));
+        jPanel1.add(t_bao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 480, 130, -1));
         
         l_bao12.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
         l_bao12.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_bao12.setText("Mejor Ao12:");
         l_bao12.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_bao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 480, 140, -1));
+        jPanel1.add(l_bao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 520, 140, -1));
         
         t_bao12.setEditable(false);
         t_bao12.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -278,13 +293,13 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_bao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 480, 130, -1));
+        jPanel1.add(t_bao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 520, 130, -1));
         
         l_bao100.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
         l_bao100.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_bao100.setText("Mejor Ao100:");
         l_bao100.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_bao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 520, 140, -1));
+        jPanel1.add(l_bao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 560, 140, -1));
         
         t_bao100.setEditable(false);
         t_bao100.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -299,7 +314,7 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_bao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 520, 130, -1));
+        jPanel1.add(t_bao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 560, 130, -1));
         
         
         
@@ -317,7 +332,7 @@ public class InformacionSesion extends JFrame{
         b_eliminar.addActionListener((java.awt.event.ActionEvent evt) -> {
             jButton2ActionPerformed(evt);
         });
-        jPanel1.add(b_eliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 570, 130, 40));
+        jPanel1.add(b_eliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 610, 130, 40));
 
         b_aceptar.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
         b_aceptar.setText("Aceptar");
@@ -333,21 +348,24 @@ public class InformacionSesion extends JFrame{
         b_aceptar.addActionListener((java.awt.event.ActionEvent evt) -> {
             jButton3ActionPerformed(evt);
         });
-        jPanel1.add(b_aceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 570, 130, 40));
+        jPanel1.add(b_aceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 610, 130, 40));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 380, 640));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 380, 680));
         
         t_nombre.setText(sesion.getNombre());
         t_total.setText(sesion.getTotalSolves()+"");
         t_mejor.setText(sesion.getMejor().getTiempo());
         t_peor.setText(sesion.getPeor().getTiempo());
         t_avg.setText(sesion.getAvg().getTiempo());
+        t_desv.setText(sesion.getDesviacion() + "");
         t_bao5.setText(sesion.getBestAo5().getTiempo());
         t_bao12.setText(sesion.getBestAo12().getTiempo());
         t_bao100.setText(sesion.getBestAo100().getTiempo());
         t_cao5.setText(sesion.getCurrentAo5().getTiempo());
         t_cao12.setText(sesion.getCurrentAo12().getTiempo());
         t_cao100.setText(sesion.getCurrentAo100().getTiempo());
+        
+        PrincipalUtil.actualizarTema(Principal.tema, 2);
         pack();
         setLocationRelativeTo(null);
     }
@@ -559,30 +577,32 @@ public class InformacionSesion extends JFrame{
         return false;
     }
             
-    private final javax.swing.JButton b_eliminar;
-    private final javax.swing.JButton b_aceptar;
-    private final javax.swing.JPanel jPanel1;
-    private final javax.swing.JLabel l_mejor;
-    private final javax.swing.JLabel l_peor;
-    private final javax.swing.JLabel l_avg;
-    private final javax.swing.JLabel l_nombre;
-    private final javax.swing.JLabel l_img;
-    private final javax.swing.JLabel l_total;
-    private final javax.swing.JLabel l_cao5;
-    private final javax.swing.JLabel l_cao12;
-    private final javax.swing.JLabel l_cao100;
-    private final javax.swing.JLabel l_bao5;
-    private final javax.swing.JLabel l_bao12;
-    private final javax.swing.JLabel l_bao100;
-    private final javax.swing.JTextField t_mejor;
-    private final javax.swing.JTextField t_peor;
-    private final javax.swing.JTextField t_nombre;
-    private final javax.swing.JTextField t_total;
-    private final javax.swing.JTextField t_avg;
-    private final javax.swing.JTextField t_cao5;
-    private final javax.swing.JTextField t_cao12;
-    private final javax.swing.JTextField t_cao100;
-    private final javax.swing.JTextField t_bao5;
-    private final javax.swing.JTextField t_bao12;
-    private final javax.swing.JTextField t_bao100;
+    public javax.swing.JButton b_eliminar;
+    public javax.swing.JButton b_aceptar;
+    public static javax.swing.JPanel jPanel1;
+    public static javax.swing.JLabel l_mejor;
+    public static javax.swing.JLabel l_peor;
+    public static javax.swing.JLabel l_avg;
+    public static javax.swing.JLabel l_desv;
+    public static javax.swing.JLabel l_nombre;
+    public static javax.swing.JLabel l_img;
+    public static javax.swing.JLabel l_total;
+    public static javax.swing.JLabel l_cao5;
+    public static javax.swing.JLabel l_cao12;
+    public static javax.swing.JLabel l_cao100;
+    public static javax.swing.JLabel l_bao5;
+    public static javax.swing.JLabel l_bao12;
+    public static javax.swing.JLabel l_bao100;
+    public static javax.swing.JTextField t_mejor;
+    public static javax.swing.JTextField t_peor;
+    public static javax.swing.JTextField t_nombre;
+    public static javax.swing.JTextField t_total;
+    public static javax.swing.JTextField t_avg;
+    public static javax.swing.JTextField t_desv;
+    public static javax.swing.JTextField t_cao5;
+    public static javax.swing.JTextField t_cao12;
+    public static javax.swing.JTextField t_cao100;
+    public static javax.swing.JTextField t_bao5;
+    public static javax.swing.JTextField t_bao12;
+    public static javax.swing.JTextField t_bao100;
 }

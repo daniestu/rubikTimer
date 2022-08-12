@@ -14,6 +14,7 @@ public class Sesion {
     private Solve mejor;
     private Solve peor;
     private AVG avg;
+    private double desviacion;
     private AVG bestAo5;
     private AVG bestAo12;
     private AVG bestAo100;
@@ -52,6 +53,14 @@ public class Sesion {
 
     public void setAvg(AVG avg) {
         this.avg = avg;
+    }
+    
+    public double getDesviacion() {
+        return desviacion;
+    }
+
+    public void setDesviacion(double desviacion) {
+        this.desviacion = desviacion;
     }
 
     public AVG getBestAo5() {
@@ -110,11 +119,12 @@ public class Sesion {
         this.totalSolves = totalSolves;
     }
 
-    public Sesion(String nombre, Solve mejor, Solve peor, AVG avg, AVG bestAo5, AVG bestAo12, AVG bestAo100, AVG currentAo5, AVG currentAo12, AVG currentAo100, int totalSolves) {
+    public Sesion(String nombre, Solve mejor, Solve peor, AVG avg, double desviacion, AVG bestAo5, AVG bestAo12, AVG bestAo100, AVG currentAo5, AVG currentAo12, AVG currentAo100, int totalSolves) {
         this.nombre = nombre;
         this.mejor = mejor;
         this.peor = peor;
         this.avg = avg;
+        this.desviacion = desviacion;
         this.bestAo5 = bestAo5;
         this.bestAo12 = bestAo12;
         this.bestAo100 = bestAo100;
