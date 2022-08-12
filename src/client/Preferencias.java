@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFrame;
+import utilities.PrincipalUtil;
 
 /**
  *
@@ -31,12 +32,14 @@ public class Preferencias extends JFrame {
         this.setPreferredSize(new java.awt.Dimension(640, 308));
         
         //**VARIABLES**//
+        jPanelFondo = new javax.swing.JPanel();
         jPanelGeneral = new javax.swing.JPanel();
         l_temas = new javax.swing.JLabel();
         l_titulo = new javax.swing.JLabel();
         l_segundos = new javax.swing.JLabel();
         jRadioButtonTema1 = new javax.swing.JRadioButton();
         jRadioButtonTema2 = new javax.swing.JRadioButton();
+        jRadioButtonTema3 = new javax.swing.JRadioButton();
         buttonGroup1 = new javax.swing.ButtonGroup();
         jCheckBoxOcultarElementos = new javax.swing.JCheckBox();
         jCheckBoxOcultar_preview = new javax.swing.JCheckBox();
@@ -58,6 +61,9 @@ public class Preferencias extends JFrame {
         
         setTitle("Configuración");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        
+        jPanelFondo.setBackground(new java.awt.Color(255, 219, 219));
+        jPanelFondo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
         jPanelGeneral.setPreferredSize(new java.awt.Dimension(500, 500));
         jPanelGeneral.setBackground(new java.awt.Color(255, 219, 219));
@@ -98,22 +104,31 @@ public class Preferencias extends JFrame {
         
         buttonGroup1.add(jRadioButtonTema1);
         buttonGroup1.add(jRadioButtonTema2);
+        buttonGroup1.add(jRadioButtonTema3);
         
         jRadioButtonTema1.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
         jRadioButtonTema1.setBackground(new java.awt.Color(255,219,219));
-        jRadioButtonTema1.setText("Tema 1");
+        jRadioButtonTema1.setText("Principal");
         jRadioButtonTema1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         jRadioButtonTema1.setFocusable(false);
         
-        jPanelTemas.add(jRadioButtonTema1, new org.netbeans.lib.awtextra.AbsoluteConstraints(95, 0, 100, 30));
+        jPanelTemas.add(jRadioButtonTema1, new org.netbeans.lib.awtextra.AbsoluteConstraints(95, 0, 110, 30));
         
         jRadioButtonTema2.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
         jRadioButtonTema2.setBackground(new java.awt.Color(255,219,219));
-        jRadioButtonTema2.setText("Tema 2");
+        jRadioButtonTema2.setText("Claro");
         jRadioButtonTema2.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         jRadioButtonTema2.setFocusable(false);
         
-        jPanelTemas.add(jRadioButtonTema2, new org.netbeans.lib.awtextra.AbsoluteConstraints(195, 0, 100, 30));
+        jPanelTemas.add(jRadioButtonTema2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, 80, 30));
+        
+        jRadioButtonTema3.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
+        jRadioButtonTema3.setBackground(new java.awt.Color(255,219,219));
+        jRadioButtonTema3.setText("Oscuro");
+        jRadioButtonTema3.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        jRadioButtonTema3.setFocusable(false);
+        
+        jPanelTemas.add(jRadioButtonTema3, new org.netbeans.lib.awtextra.AbsoluteConstraints(295, 0, 95, 30));
         
         jPanelGeneral.add(jPanelTemas, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 50, 590, 30));
         
@@ -233,17 +248,18 @@ public class Preferencias extends JFrame {
             jButton1CancelarActionPerformed(evt);
         });
         
-        getContentPane().add(jButtonAceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 265, 120, 33));
-        getContentPane().add(jButton1Reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 265, 120, 33));
-        getContentPane().add(jButton1Cancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 265, 120, 33));
+        jPanelFondo.add(jButtonAceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 265, 120, 33));
+        jPanelFondo.add(jButton1Reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 265, 120, 33));
+        jPanelFondo.add(jButton1Cancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 265, 120, 33));
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
-        getContentPane().setBackground(new java.awt.Color(255, 219, 219));
-        getContentPane().add(jPanelGeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 600, 235));
-        
+        jPanelFondo.setBackground(new java.awt.Color(255, 219, 219));
+        jPanelFondo.add(jPanelGeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 600, 235));
+        getContentPane().add(jPanelFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 308));
         init();
         
+        PrincipalUtil.actualizarTema(Principal.tema, 6);
         pack();
         setLocationRelativeTo(null);
     }
@@ -273,6 +289,8 @@ public class Preferencias extends JFrame {
             Principal.tema = 1;
         }else if (jRadioButtonTema2.isSelected()) {
             Principal.tema = 2;
+        }else if (jRadioButtonTema3.isSelected()) {
+            Principal.tema = 3;
         }
         
         Principal.ocultar_todo = jCheckBoxOcultarElementos.isSelected();
@@ -318,6 +336,8 @@ public class Preferencias extends JFrame {
             jRadioButtonTema1.setSelected(true);
         }else if (Principal.tema == 2) {
             jRadioButtonTema2.setSelected(true);
+        }else if (Principal.tema == 3) {
+            jRadioButtonTema3.setSelected(true);
         }
         
         if (Principal.ocultar_todo) {
@@ -357,27 +377,29 @@ public class Preferencias extends JFrame {
         jTextFieldSegundos.setText(Principal.tiempo_inspeccion + "");
     }
     
-    private final javax.swing.JPanel jPanelGeneral;
-    private final javax.swing.JLabel l_temas;
-    private final javax.swing.JLabel l_titulo;
-    private final javax.swing.JLabel l_segundos;
-    private final javax.swing.ButtonGroup buttonGroup1;
-    private final javax.swing.JRadioButton jRadioButtonTema1;
-    private final javax.swing.JRadioButton jRadioButtonTema2;
-    private final javax.swing.JCheckBox jCheckBoxOcultarElementos;
-    private final javax.swing.JCheckBox jCheckBoxOcultar_preview;
-    private final javax.swing.JCheckBox jCheckBoxPulsacion_larga;
-    private final javax.swing.JCheckBox jCheckBoxCrono_raton;
-    private final javax.swing.JCheckBox jCheckBoxTiempo_inspeccion;
-    private final javax.swing.JPanel jPanelTitulo;
-    private final javax.swing.JPanel jPanelTemas;
-    private final javax.swing.JPanel jPanelOcultarElementos;
-    private final javax.swing.JPanel jPanelOcultarPreview;
-    private final javax.swing.JPanel jPanelPulsacionLarga;
-    private final javax.swing.JPanel jPanelCronoRaton;
-    private final javax.swing.JPanel jPanelTiempo_inspeccion;
-    private final javax.swing.JButton jButtonAceptar;
-    private final javax.swing.JButton jButton1Reset;
-    private final javax.swing.JButton jButton1Cancelar;
-    private final javax.swing.JTextField jTextFieldSegundos;
+    public static javax.swing.JPanel jPanelFondo;
+    public static javax.swing.JPanel jPanelGeneral;
+    public static javax.swing.JLabel l_temas;
+    public static javax.swing.JLabel l_titulo;
+    public static javax.swing.JLabel l_segundos;
+    public static javax.swing.ButtonGroup buttonGroup1;
+    public static javax.swing.JRadioButton jRadioButtonTema1;
+    public static javax.swing.JRadioButton jRadioButtonTema2;
+    public static javax.swing.JRadioButton jRadioButtonTema3;
+    public static javax.swing.JCheckBox jCheckBoxOcultarElementos;
+    public static javax.swing.JCheckBox jCheckBoxOcultar_preview;
+    public static javax.swing.JCheckBox jCheckBoxPulsacion_larga;
+    public static javax.swing.JCheckBox jCheckBoxCrono_raton;
+    public static javax.swing.JCheckBox jCheckBoxTiempo_inspeccion;
+    public static javax.swing.JPanel jPanelTitulo;
+    public static javax.swing.JPanel jPanelTemas;
+    public static javax.swing.JPanel jPanelOcultarElementos;
+    public static javax.swing.JPanel jPanelOcultarPreview;
+    public static javax.swing.JPanel jPanelPulsacionLarga;
+    public static javax.swing.JPanel jPanelCronoRaton;
+    public static javax.swing.JPanel jPanelTiempo_inspeccion;
+    public static javax.swing.JButton jButtonAceptar;
+    public static javax.swing.JButton jButton1Reset;
+    public static javax.swing.JButton jButton1Cancelar;
+    public static javax.swing.JTextField jTextFieldSegundos;
 }

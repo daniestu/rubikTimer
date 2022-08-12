@@ -6,8 +6,6 @@
 package client;
 
 import controller.SesionDao;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileWriter;
 import javax.swing.JFrame;
@@ -22,7 +20,6 @@ public class NuevaSesion extends JFrame{
     
     
     NuevaSesion(){
-        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         this.setUndecorated(true);
         this.setVisible(true);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -76,6 +73,7 @@ public class NuevaSesion extends JFrame{
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 460, 140));
 
+        PrincipalUtil.actualizarTema(Principal.tema, 4);
         pack();
         setLocationRelativeTo(null);
     }
@@ -169,9 +167,9 @@ public class NuevaSesion extends JFrame{
         this.dispose();
     }
     
-    private final javax.swing.JLabel jLabel1;
-    private final javax.swing.JPanel jPanel1;
-    private final javax.swing.JTextField t_nombre;
-    private final javax.swing.JButton jButtonAceptar;
-    private final javax.swing.JButton jButtonCancelar;
+    public static javax.swing.JLabel jLabel1;
+    public static javax.swing.JPanel jPanel1;
+    public javax.swing.JTextField t_nombre;
+    public javax.swing.JButton jButtonAceptar;
+    public javax.swing.JButton jButtonCancelar;
 }

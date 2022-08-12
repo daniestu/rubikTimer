@@ -24,7 +24,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
-import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import model.Cubo;
 import controller.CuboDao;
@@ -72,13 +71,16 @@ public final class Principal extends JFrame implements KeyListener {
     public static int m, s, cs, ms;
     public static String movimientos[] = {"R2", "U2", "L2", "D2", "F2", "B2", "R", "U", "L", "D", "F", "B", "R'", "U'", "L'", "D'", "F'", "B'"};
     public DefaultListCellRenderer listRenderer = new DefaultListCellRenderer();
-    ImageIcon iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo30x30.png"));
-    ImageIcon iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
-    ImageIcon iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover.png"));
-    ImageIcon iconMinimizar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/minimizar.png"));
-    ImageIcon iconMinimizarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/minimizar-hover.png"));
-    ImageIcon iconMaximizar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/maximizar.png"));
-    ImageIcon iconMaximizarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/maximizar-hover.png"));
+    
+    ImageIcon iconLogo;
+    ImageIcon iconCerrar;
+    ImageIcon iconCerrarHover;
+    ImageIcon iconMinimizar;
+    ImageIcon iconMinimizarHover;
+    ImageIcon iconMaximizar;
+    ImageIcon iconMaximizarHover;
+    
+    public static Color colorTiempo = new java.awt.Color(51, 51, 51);
     
     public ActionListener sec = (ActionEvent e) -> {
         if (!sufic) {
@@ -143,18 +145,6 @@ public final class Principal extends JFrame implements KeyListener {
         this.setVisible(true);
 
         //DECLARACION DE VARIABLES
-        Border dashed = BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5);
-        
-        Border empty = BorderFactory.createEmptyBorder(0, -1, 0, 0);
-        Border compoundRightBot = new CompoundBorder(empty, dashed);
-        empty = BorderFactory.createEmptyBorder(0, 0, 0, -1);
-        Border compoundLeftBot = new CompoundBorder(empty, dashed);
-        empty = BorderFactory.createEmptyBorder(0, 0, 0, 0);
-        Border compoundBot = new CompoundBorder(empty, dashed);
-        empty = BorderFactory.createEmptyBorder(0, 0, -1, -1);
-        Border compoundLeft = new CompoundBorder(empty, dashed);
-        empty = BorderFactory.createEmptyBorder(0, -1, -1, 0);
-        Border compoundRight = new CompoundBorder(empty, dashed);
 
         jScrollPane1 = new javax.swing.JScrollPane();
         campo_sesion = new javax.swing.JTextField();
@@ -188,6 +178,7 @@ public final class Principal extends JFrame implements KeyListener {
         jMenuCerrar = new javax.swing.JMenu();
         jMenuMinimizar = new javax.swing.JMenu();
         jMenuLogo = new javax.swing.JMenu();
+        m_addScramble = new javax.swing.JMenuItem();
         m_new = new javax.swing.JMenuItem();
         m_add = new javax.swing.JMenuItem();
         m_info = new javax.swing.JMenuItem();
@@ -257,6 +248,30 @@ public final class Principal extends JFrame implements KeyListener {
         b8 = new javax.swing.JPanel();
         b9 = new javax.swing.JPanel();
         
+        int iconDimension = (pantalla.height * 30) / 1080;
+        
+        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo30x30.png"));
+        Image newimg = iconLogo.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+        iconLogo = new ImageIcon(newimg);
+        iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
+        newimg = iconCerrar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+        iconCerrar = new ImageIcon(newimg);
+        iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover.png"));
+        newimg = iconCerrarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+        iconCerrarHover = new ImageIcon(newimg);
+        iconMinimizar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/minimizar.png"));
+        newimg = iconMinimizar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+        iconMinimizar = new ImageIcon(newimg);
+        iconMinimizarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/minimizar-hover.png"));
+        newimg = iconMinimizarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+        iconMinimizarHover = new ImageIcon(newimg);
+        iconMaximizar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/maximizar.png"));
+        newimg = iconMaximizar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+        iconMaximizar = new ImageIcon(newimg);
+        iconMaximizarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/maximizar-hover.png"));
+        newimg = iconMaximizarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+        iconMaximizarHover = new ImageIcon(newimg);
+        
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Rubik Timer");
         setPreferredSize(pantalla);
@@ -264,13 +279,13 @@ public final class Principal extends JFrame implements KeyListener {
        
         //BARRA MENU
         jMenuBar1.setBackground(new java.awt.Color(240,240,240));
-        jMenuBar1.setPreferredSize(new java.awt.Dimension(pantalla.width, 35));
+        jMenuBar1.setPreferredSize(new java.awt.Dimension(pantalla.width, (pantalla.height * 35)/1080));
         
         //MENU ITEMS
         jMenuLogo.setIcon(iconLogo);
         jMenuLogo.enable(false);
         jMenu1.setText("Opciones");
-        jMenu1.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
+        jMenu1.setFont(new java.awt.Font("Segoe UI", 0, ((pantalla.height*22)/1080))); // NOI18N
         jMenuCerrar.setIcon(iconCerrar);
         jMenuCerrar.setBackground(Color.red);
         jMenuCerrar.disable();
@@ -309,10 +324,22 @@ public final class Principal extends JFrame implements KeyListener {
             }
         });
 
-        //SUBMENU ITEMS 
+        //SUBMENU ITEMS
+        int fontSize = (pantalla.height * 20) / 1080;
+        m_addScramble.setText("Scramble personalizado");
+        m_addScramble.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
+        m_addScramble.addActionListener((java.awt.event.ActionEvent evt) -> {
+            Frame f[] = JFrame.getFrames();
+            for (Frame i : f) {
+                if (i.getTitle().equals("Nuevo scramble")) {
+                    i.dispose();
+                }
+            }
+            NuevoScramble nuevoScramble = new NuevoScramble();
+        });
         m_new.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
         m_new.setText("Nueva Sesión");
-        m_new.setFont(new java.awt.Font("Segoe UI", 0, 20));
+        m_new.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_new.addActionListener((java.awt.event.ActionEvent evt) -> {
             Frame f[] = JFrame.getFrames();
             for (Frame i : f) {
@@ -324,7 +351,7 @@ public final class Principal extends JFrame implements KeyListener {
         });
         m_add.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         m_add.setText("Agregar tiempo");
-        m_add.setFont(new java.awt.Font("Segoe UI", 0, 20));
+        m_add.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_add.addActionListener((java.awt.event.ActionEvent evt) -> {
             Frame f[] = JFrame.getFrames();
             for (Frame i : f) {
@@ -336,7 +363,7 @@ public final class Principal extends JFrame implements KeyListener {
         });
         m_info.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         m_info.setText("Información de la sesión");
-        m_info.setFont(new java.awt.Font("Segoe UI", 0, 20));
+        m_info.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_info.addActionListener((java.awt.event.ActionEvent evt) -> {
             Sesion s1 = SesionDao.infoSesion();
             Frame f[] = JFrame.getFrames();
@@ -349,7 +376,7 @@ public final class Principal extends JFrame implements KeyListener {
         });
         m_cerrar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         m_cerrar.setText("Cerrar");
-        m_cerrar.setFont(new java.awt.Font("Segoe UI", 0, 20));
+        m_cerrar.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_cerrar.addActionListener((java.awt.event.ActionEvent evt) -> {
             Frame[] frames = Principal.getFrames();
             for (Frame frame : frames) {
@@ -358,22 +385,22 @@ public final class Principal extends JFrame implements KeyListener {
         });
         m_sig.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         m_sig.setText("Nueva mezcla");
-        m_sig.setFont(new java.awt.Font("Segoe UI", 0, 20));
+        m_sig.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_sig.addActionListener((java.awt.event.ActionEvent evt) -> {
             String scram = PrincipalUtil.generarScramble();
             l_scramble.setText(scram);
             Cubo c = CuboDao.generarCubo(scram);
-            CuboDao.establecerCubo(c);
+            CuboDao.establecerCubo(c, 0);
         });
         m_ant.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
         m_ant.setText("Mezcla Anterior");
-        m_ant.setFont(new java.awt.Font("Segoe UI", 0, 20));
+        m_ant.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_ant.setEnabled(false);
         m_ant.addActionListener((java.awt.event.ActionEvent evt) -> {
             scrambles.remove(scrambles.size()-1);
             l_scramble.setText(scrambles.get(scrambles.size()-1));
             Cubo c = CuboDao.generarCubo(scrambles.get(scrambles.size()-1));
-            CuboDao.establecerCubo(c);
+            CuboDao.establecerCubo(c, 0);
             
             if (scrambles.size()<2) {
                 m_ant.setEnabled(false);
@@ -382,7 +409,7 @@ public final class Principal extends JFrame implements KeyListener {
         
         m_pref.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         m_pref.setText("Configuración");
-        m_pref.setFont(new java.awt.Font("Segoe UI", 0, 20));
+        m_pref.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_pref.addActionListener((java.awt.event.ActionEvent evt) -> {
             Frame f[] = JFrame.getFrames();
             for (Frame i : f) {
@@ -393,6 +420,7 @@ public final class Principal extends JFrame implements KeyListener {
             Preferencias preferencias = new Preferencias();
         });
 
+        jMenu1.add(m_addScramble);
         jMenu1.add(m_ant);
         jMenu1.add(m_sig);
         jMenu1.add(m_add);
@@ -428,8 +456,7 @@ public final class Principal extends JFrame implements KeyListener {
         //CRONOMETRO
         t_tiempo.setEditable(false);
         t_tiempo.setBackground(new java.awt.Color(205, 242, 154));
-        int tamanioTiempo = (pantalla.width * 230) /1920;
-        t_tiempo.setFont(new java.awt.Font("Segoe UI", 0, tamanioTiempo));
+        t_tiempo.setFont(new java.awt.Font("Segoe UI", 0, (pantalla.width * 230) /1920));
         t_tiempo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_tiempo.setText("00:00:00");
         t_tiempo.setBorder(null);
@@ -452,25 +479,33 @@ public final class Principal extends JFrame implements KeyListener {
         jPanelScramble.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         jPanelScramble.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                formMousePressed(evt);
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanelScrambleMouseClicked();
             }
-            @Override
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                formMouseReleased(evt);
+            
+            private void jPanelScrambleMouseClicked() {
+                Cubo cubo = CuboDao.generarCubo(l_scramble.getText());
+                Frame f[] = JFrame.getFrames();
+                for (Frame i : f) {
+                    if (i.getTitle().equals("Scramble")) {
+                        i.dispose();
+                    }
+                }
+                ScramblePreview scramblePreview = new ScramblePreview(cubo);
             }
         });
 
-        int tamanioScramble = (pantalla.width * 50) /1920;
-        l_scramble.setFont(new java.awt.Font("Segoe UI", 0, tamanioScramble));
+        l_scramble.setFont(new java.awt.Font("Segoe UI", 0, (pantalla.width * 50) /1920));
         String scram = PrincipalUtil.generarScramble();
         l_scramble.setText(scram);
         Cubo c = CuboDao.generarCubo(scram);
         
         l_scramble.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jPanelScramble.add(l_scramble, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, pantalla.width - 220, 90));
-
-        jPanelGeneral.add(jPanelScramble, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 0, pantalla.width - 220, 90));
+        int scrambleWidth = (pantalla.width * 1700) / 1920;
+        int scrambleHeight = (pantalla.height * 90) / 1080;
+        jPanelScramble.add(l_scramble, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, scrambleWidth, scrambleHeight));
+        
+        jPanelGeneral.add(jPanelScramble, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 220) / 1920, 0, scrambleWidth, scrambleHeight));
         
         //PANEL DE LA IZQUIERDA
         jScrollPane1.setBorder(null);
@@ -492,7 +527,7 @@ public final class Principal extends JFrame implements KeyListener {
         });
 
         Listado.setBackground(new java.awt.Color(255, 204, 204));
-        Listado.setFont(new java.awt.Font("Segoe UI", 0, 30)); // NOI18N
+        Listado.setFont(new java.awt.Font("Segoe UI", 0, (pantalla.width * 30) / 1920)); // NOI18N
         Listado.setEnabled(true);
         Listado.setFocusable(false);
         Listado.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -510,6 +545,7 @@ public final class Principal extends JFrame implements KeyListener {
         jPanelTiempos.setBackground(new java.awt.Color(255, 204, 204));
         jPanelTiempos.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         jPanelTiempos.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(180, 180, 180), 1, true));
+        jPanelTiempos.setName("tiempos");
         jPanelTiempos.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -521,13 +557,13 @@ public final class Principal extends JFrame implements KeyListener {
             }
         });
 
-        jPanelTiempos.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 2, 190, pantalla.height - 442));
+        jPanelTiempos.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 5) / 1920, (pantalla.height * 2) / 1080, (pantalla.width * 190) / 1920, (pantalla.height * 638) / 1080));
 
-        jPanelAside.add(jPanelTiempos, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 395, 200, pantalla.height - 437));
+        jPanelAside.add(jPanelTiempos, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 10) / 1920, (pantalla.height * 395) / 1080, (pantalla.width * 200) / 1920, (pantalla.height * 643) / 1080));
 
-        jPanelGeneral.add(jPanelAside, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, pantalla.height - 35));
+        jPanelGeneral.add(jPanelAside, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, (pantalla.width * 220) / 1920, (pantalla.height * 1045) / 1080));
         
-        jPanelGeneral.add(t_tiempo, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, ((pantalla.height - 35) / 2) - 300, pantalla.width-2, 200));
+        jPanelGeneral.add(t_tiempo, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 1) / 1920, (pantalla.height * 222) / 1080, (pantalla.width * 1918) / 1920, (pantalla.height * 200) / 1080));
 
         //ETIQUETA DE SESIÓN Y LISTADO DE SESIONES
         campo_sesion.setFont(new java.awt.Font("Segoe UI", 0, 30));
@@ -536,12 +572,12 @@ public final class Principal extends JFrame implements KeyListener {
         campo_sesion.setFocusable(false);
         campo_sesion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        l_snombre.setFont(new java.awt.Font("Segoe UI", 0, 30)); // NOI18N
+        l_snombre.setFont(new java.awt.Font("Segoe UI", 0, (pantalla.height * 30) / 1080)); // NOI18N
         l_snombre.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         l_snombre.setText("Sesión");
 
         jComboBox1.setModel(PrincipalUtil.cargarModeloComboBox());
-        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, 30));
+        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, (pantalla.height * 30) / 1080));
         jComboBox1.setBorder(null);
         listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER); // center-aligned items
         jComboBox1.setRenderer(listRenderer);
@@ -564,20 +600,20 @@ public final class Principal extends JFrame implements KeyListener {
                 formMouseReleased(evt);
             }
         });
-
-        l_total.setFont(new java.awt.Font("Times New Roman", 1, 26));
+        int estadisticaFontSize = (pantalla.height * 26) / 1080;
+        l_total.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
         l_total.setBackground(Color.red);
         l_total.setText(" Total");
-        l_total.setBorder(compoundLeft);
-        l_total_2.setFont(new java.awt.Font("Times New Roman", 0, 26));
+        l_total.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+        l_total_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
         l_total_2.setBackground(Color.red);
-        l_total_2.setBorder(compoundRight);
+        l_total_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
 
-        l_best.setFont(new java.awt.Font("Times New Roman", 1, 26));
+        l_best.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
         l_best.setText(" Mejor");
-        l_best.setBorder(compoundLeft);
-        l_best_2.setFont(new java.awt.Font("Times New Roman", 0, 26));
-        l_best_2.setBorder(compoundRight);
+        l_best.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+        l_best_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
+        l_best_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
         l_best_2.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -587,11 +623,11 @@ public final class Principal extends JFrame implements KeyListener {
             }
         });
 
-        l_worst.setFont(new java.awt.Font("Times New Roman", 1, 26));
+        l_worst.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
         l_worst.setText(" Peor");
-        l_worst.setBorder(compoundLeft);
-        l_worst_2.setFont(new java.awt.Font("Times New Roman", 0, 26));
-        l_worst_2.setBorder(compoundRight);
+        l_worst.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+        l_worst_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
+        l_worst_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
         l_worst_2.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -602,11 +638,11 @@ public final class Principal extends JFrame implements KeyListener {
             }
         });
         
-        l_ao5.setFont(new java.awt.Font("Times New Roman", 1, 26));
+        l_ao5.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
         l_ao5.setText(" Ao5");
-        l_ao5.setBorder(compoundLeft);
-        l_ao5_2.setFont(new java.awt.Font("Times New Roman", 0, 26));
-        l_ao5_2.setBorder(compoundRight);
+        l_ao5.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+        l_ao5_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
+        l_ao5_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
         l_ao5_2.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -626,11 +662,11 @@ public final class Principal extends JFrame implements KeyListener {
             }
         });
 
-        l_ao12.setFont(new java.awt.Font("Times New Roman", 1, 26));
+        l_ao12.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
         l_ao12.setText(" Ao12");
-        l_ao12.setBorder(compoundLeft);
-        l_ao12_2.setFont(new java.awt.Font("Times New Roman", 0, 26));
-        l_ao12_2.setBorder(compoundRight);
+        l_ao12.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+        l_ao12_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
+        l_ao12_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
         l_ao12_2.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -649,11 +685,11 @@ public final class Principal extends JFrame implements KeyListener {
                 InformacionAVG informacionAVG = new InformacionAVG(currentAo12);
             }
         });
-        l_ao100.setFont(new java.awt.Font("Times New Roman", 1, 26));
+        l_ao100.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
         l_ao100.setText(" Ao100");
-        l_ao100.setBorder(compoundLeft);
-        l_ao100_2.setFont(new java.awt.Font("Times New Roman", 0, 26));
-        l_ao100_2.setBorder(compoundRight);
+        l_ao100.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+        l_ao100_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
+        l_ao100_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
         l_ao100_2.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -673,38 +709,40 @@ public final class Principal extends JFrame implements KeyListener {
             }
         });
 
-        l_totalavg.setFont(new java.awt.Font("Times New Roman", 1, 26));
+        l_totalavg.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
         l_totalavg.setText(" Media");
-        l_totalavg.setBorder(compoundLeftBot);
-        l_totalavg_2.setFont(new java.awt.Font("Times New Roman", 0, 26));
-        l_totalavg_2.setBorder(compoundRightBot);
+        l_totalavg.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, 0, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+        l_totalavg_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
+        l_totalavg_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, 0, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
 
-        jPanelEstadisticas.add(l_total, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 40));
-        jPanelEstadisticas.add(l_best, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 100, 40));
-        jPanelEstadisticas.add(l_worst, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 100, 40));
-        jPanelEstadisticas.add(l_ao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 100, 40));
-        jPanelEstadisticas.add(l_ao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 100, 40));
-        jPanelEstadisticas.add(l_ao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 100, 40));
-        jPanelEstadisticas.add(l_totalavg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 240, 100, 40));
+        int estadisticaWidth = (pantalla.width * 100) / 1920;
+        int estadisticaHeight = (pantalla.height * 40) / 1080;
+        jPanelEstadisticas.add(l_total, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_best, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, estadisticaHeight, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_worst, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, estadisticaHeight*2, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_ao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, estadisticaHeight*3, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_ao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, estadisticaHeight*4, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_ao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, estadisticaHeight*5, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_totalavg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, estadisticaHeight*6, estadisticaWidth, estadisticaHeight));
         
-        
-        jPanelEstadisticas.add(l_total_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 0, 100, 40));
-        jPanelEstadisticas.add(l_best_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, 100, 40));
-        jPanelEstadisticas.add(l_worst_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 80, 100, 40));
-        jPanelEstadisticas.add(l_ao5_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 120, 100, 40));
-        jPanelEstadisticas.add(l_ao12_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 160, 100, 40));
-        jPanelEstadisticas.add(l_ao100_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 200, 100, 40));
-        jPanelEstadisticas.add(l_totalavg_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 240, 100, 40));
+        jPanelEstadisticas.add(l_total_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(estadisticaWidth, 0, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_best_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(estadisticaWidth, estadisticaHeight, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_worst_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(estadisticaWidth, estadisticaHeight*2, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_ao5_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(estadisticaWidth, estadisticaHeight*3, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_ao12_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(estadisticaWidth, estadisticaHeight*4, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_ao100_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(estadisticaWidth, estadisticaHeight*5, estadisticaWidth, estadisticaHeight));
+        jPanelEstadisticas.add(l_totalavg_2, new org.netbeans.lib.awtextra.AbsoluteConstraints(estadisticaWidth, estadisticaHeight*6, estadisticaWidth, estadisticaHeight));
         
 
-        jPanelAside.add(jPanelEstadisticas, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 105, 200, 280));
+        jPanelAside.add(jPanelEstadisticas, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 10) / 1920, (pantalla.height * 105) / 1080, (pantalla.width * 200) / 1920, (pantalla.height * 280) / 1080));
 
-        jPanelAside.add(l_snombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 160, 40));
-        jPanelAside.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(4, 55, 212, 40));
+        jPanelAside.add(l_snombre, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 30) / 1920, (pantalla.height * 10) / 1080, (pantalla.width * 160) / 1920, (pantalla.height * 40) / 1080));
+        jPanelAside.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 4) / 1920, (pantalla.height * 55) / 1080, (pantalla.width * 212) / 1920, (pantalla.height * 40) / 1080));
+        
         
         int tamanioCuadrado = (pantalla.height * 30) / 1080;
-        int tamanioPreviewAlto = (tamanioCuadrado * 9) + 20;
-        int tamanioPreviewAncho = (tamanioCuadrado * 12) + 20;
+        int tamanioPreviewAlto = (tamanioCuadrado * 9) + ((pantalla.height * 20) / 1080);
+        int tamanioPreviewAncho = (tamanioCuadrado * 12) + ((pantalla.width * 20) / 1920);
         
         jPanelPreview.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         //jPanelPreview.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -886,25 +924,15 @@ public final class Principal extends JFrame implements KeyListener {
         jPanelPreview.add(b8, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*10) + 9, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
         jPanelPreview.add(b9, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*11) + 8, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
         
+        jPanelGeneral.add(jPanelPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(pantalla.width - tamanioPreviewAncho-2, pantalla.height - tamanioPreviewAlto - ((pantalla.height * 35) / 1080), tamanioPreviewAncho, tamanioPreviewAlto - 2));
         
+        getContentPane().add(jPanelGeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, pantalla.width, pantalla.height - ((pantalla.height * 35)/1080)));
         
-        jPanelGeneral.add(jPanelPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(pantalla.width - tamanioPreviewAncho-2, pantalla.height - tamanioPreviewAlto - 35, tamanioPreviewAncho, tamanioPreviewAlto));
-        
-        getContentPane().add(jPanelGeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, pantalla.width, pantalla.height));
-        
-        CuboDao.establecerCubo(c);
+        CuboDao.establecerCubo(c, 0);
         
         pack();
-        /*
-        En sesión que haya la opción de poner el cubo que estas utilizando (tipo de cubos)
         
-        Opcion de quitar pantalla completa
-        
-        Poner preview en los tiempos de las sesiones
-      
-        
-        ¿Es posible cerrar las ventanas response al clickar en la ventana main?
-        */
+        PrincipalUtil.alinearPanelAside();
 
         this.setExtendedState(MAXIMIZED_BOTH);
 
@@ -1039,7 +1067,7 @@ public final class Principal extends JFrame implements KeyListener {
             String scram = PrincipalUtil.generarScramble();
             l_scramble.setText(scram);
             Cubo c = CuboDao.generarCubo(scram);
-            CuboDao.establecerCubo(c);
+            CuboDao.establecerCubo(c, 0);
             corriendo = false;
         } else {
             m = 0;
@@ -1082,7 +1110,7 @@ public final class Principal extends JFrame implements KeyListener {
     
     private void tecla_soltada() {
         if (!corriendo && sufic) {
-            t_tiempo.setForeground(new java.awt.Color(0, 0, 0));
+            t_tiempo.setForeground(colorTiempo);
             t.start();
             t2.start();
             t3.start();
@@ -1095,7 +1123,7 @@ public final class Principal extends JFrame implements KeyListener {
                 jScrollPane1.getVerticalScrollBar().setValue(jScrollPane1.getVerticalScrollBar().getMaximum());
             }
             if (!sufic) {
-                t_tiempo.setForeground(new java.awt.Color(0, 0, 0));
+                t_tiempo.setForeground(colorTiempo);
             }
         }
         t4.stop();
@@ -1158,7 +1186,8 @@ public final class Principal extends JFrame implements KeyListener {
     public javax.swing.JMenu jMenuLogo;
     public javax.swing.JMenu jMenu1;
     public javax.swing.JMenu jMenuCerrar;
-    public javax.swing.JMenuBar jMenuBar1;
+    public static javax.swing.JMenuBar jMenuBar1;
+    public javax.swing.JMenuItem m_addScramble;
     public javax.swing.JMenuItem m_new;
     public javax.swing.JMenuItem m_add;
     public javax.swing.JMenuItem m_info;
@@ -1167,17 +1196,17 @@ public final class Principal extends JFrame implements KeyListener {
     public javax.swing.JMenuItem m_sig;
     public static javax.swing.JMenuItem m_ant;
     public javax.swing.JMenuItem m_pref;
-    public javax.swing.JPanel jPanelGeneral;
+    public static javax.swing.JPanel jPanelGeneral;
     public javax.swing.JPopupMenu.Separator jSeparator1;
     public static javax.swing.JTextField t_tiempo;
-    public javax.swing.JLabel l_scramble;
+    public static javax.swing.JLabel l_scramble;
     public static javax.swing.JLabel l_snombre;
-    public javax.swing.JScrollPane jScrollPane1;
+    public static javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JList Listado;
-    public javax.swing.JPanel jPanelScramble;
-    public javax.swing.JPanel jPanelAside;
-    public javax.swing.JPanel jPanelTiempos;
-    public javax.swing.JPanel jPanelEstadisticas;
+    public static javax.swing.JPanel jPanelScramble;
+    public static javax.swing.JPanel jPanelAside;
+    public static javax.swing.JPanel jPanelTiempos;
+    public static javax.swing.JPanel jPanelEstadisticas;
     public static javax.swing.JPanel jPanelPreview;
     public static javax.swing.JTextField campo_sesion;
     public static javax.swing.JLabel l_total;

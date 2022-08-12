@@ -6,7 +6,6 @@
 package client;
 
 import controller.SolveDao;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.MouseEvent;
@@ -19,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingConstants;
 import model.AVG;
 import model.Solve;
+import utilities.PrincipalUtil;
 
 /**
  *
@@ -27,7 +27,10 @@ import model.Solve;
 public class InformacionAVG extends JFrame{
     
     private final AVG avg;
-    
+    private final ImageIcon iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo90x90.png"));
+    public static ImageIcon iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
+    public static ImageIcon iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+        
     public InformacionAVG( AVG avg){
         this.avg = avg;
         
@@ -35,9 +38,9 @@ public class InformacionAVG extends JFrame{
         this.setVisible(true);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         
-        getContentPane().setPreferredSize(new Dimension(380, 640));
                  
         jScrollPane1 = new javax.swing.JScrollPane();
+        panelGeneral = new javax.swing.JPanel();
         Listado = new javax.swing.JList();
         l_img = new javax.swing.JLabel();
         l_cerrar = new javax.swing.JLabel();
@@ -46,12 +49,11 @@ public class InformacionAVG extends JFrame{
         setTitle("Información AVG");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
-        ImageIcon iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo90x90.png"));
-        ImageIcon iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
-        ImageIcon iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+        panelGeneral.setBackground(new java.awt.Color(238, 238, 238));
+        panelGeneral.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
         l_cerrar.setIcon(iconCerrar);
-        getContentPane().add(l_cerrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 10, 30, 30));
+        panelGeneral.add(l_cerrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 10, 30, 30));
         l_cerrar.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -85,7 +87,7 @@ public class InformacionAVG extends JFrame{
         });
         
         l_img.setIcon(iconLogo);
-        getContentPane().add(l_img, new org.netbeans.lib.awtextra.AbsoluteConstraints(145, 10, 90, 90));
+        panelGeneral.add(l_img, new org.netbeans.lib.awtextra.AbsoluteConstraints(145, 10, 90, 90));
         
         l_nombre.setFont(new java.awt.Font("Times new Roman", 1, 35));
         l_nombre.setHorizontalAlignment(javax.swing.JTextField.CENTER);// NOI18N
@@ -94,7 +96,7 @@ public class InformacionAVG extends JFrame{
         Map<TextAttribute, Object> attributes = new HashMap<>(font.getAttributes());
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         l_nombre.setFont(font.deriveFont(attributes));
-        getContentPane().add(l_nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 360, 50));
+        panelGeneral.add(l_nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 360, 50));
         
         jScrollPane1.setBorder(null);
         
@@ -114,7 +116,10 @@ public class InformacionAVG extends JFrame{
 
         jScrollPane1.setViewportView(Listado);
         
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 170, 310, 470));
+        panelGeneral.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 170, 310, 470));
+        getContentPane().add(panelGeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 380, 640));
+        
+        PrincipalUtil.actualizarTema(Principal.tema, 1);
         pack();
         setLocationRelativeTo(null);
     }
@@ -133,11 +138,12 @@ public class InformacionAVG extends JFrame{
         
     }
     
-    public javax.swing.JScrollPane jScrollPane1;
+    public static javax.swing.JScrollPane jScrollPane1;
+    public static javax.swing.JPanel panelGeneral;
     public static javax.swing.JList Listado;
-    private final javax.swing.JLabel l_img;
-    private final javax.swing.JLabel l_cerrar;
-    private final javax.swing.JLabel l_nombre;
+    public static javax.swing.JLabel l_img;
+    public static javax.swing.JLabel l_cerrar;
+    public static javax.swing.JLabel l_nombre;
 }
 
 

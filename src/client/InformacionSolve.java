@@ -5,17 +5,21 @@
  */
 package client;
 
+import controller.CuboDao;
 import controller.SesionDao;
 import controller.SolveDao;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import model.Cubo;
 import model.Solve;
+import utilities.PrincipalUtil;
 
 /**
  *
@@ -69,6 +73,23 @@ public class InformacionSolve extends JFrame{
         t_scramble.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         t_scramble.setText("D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2");
         t_scramble.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_scramble.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                t_scrambleMouseClicked(evt);
+            }
+
+            private void t_scrambleMouseClicked(MouseEvent evt) {
+                Cubo cubo = CuboDao.generarCubo(t_scramble.getText());
+                Frame f[] = JFrame.getFrames();
+                for (Frame i : f) {
+                    if (i.getTitle().equals("Scramble")) {
+                        i.dispose();
+                    }
+                }
+                ScramblePreview scramblePreview = new ScramblePreview(cubo);
+            }
+        });
         jPanel1.add(t_scramble, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 160, 610, -1));
         jPanel1.add(l_img, new org.netbeans.lib.awtextra.AbsoluteConstraints(325, 10, 90, 90));
 
@@ -152,6 +173,7 @@ public class InformacionSolve extends JFrame{
         t_scramble.setText(solve.getScramble());
         t_tiempo.setText(solve.getTiempo());
         
+        PrincipalUtil.actualizarTema(Principal.tema, 3);
         pack();
         setLocationRelativeTo(null);
     }
@@ -174,18 +196,18 @@ public class InformacionSolve extends JFrame{
         this.dispose();
     }
     
-    private final javax.swing.JButton jButton2;
-    private final javax.swing.JButton jButton3;
-    private final javax.swing.JPanel jPanel1;
-    private final javax.swing.JLabel l_fecha1;
-    private final javax.swing.JLabel l_fecha2;
-    private final javax.swing.JLabel l_tiempo;
-    private final javax.swing.JLabel l_id;
-    private final javax.swing.JLabel l_img;
-    private final javax.swing.JLabel l_scramble;
-    private final javax.swing.JTextField t_fecha;
-    private final javax.swing.JTextField t_hora;
-    private final javax.swing.JTextField t_id;
-    private final javax.swing.JTextField t_scramble;
-    private final javax.swing.JTextField t_tiempo;
+    public javax.swing.JButton jButton2;
+    public javax.swing.JButton jButton3;
+    public static javax.swing.JPanel jPanel1;
+    public static javax.swing.JLabel l_fecha1;
+    public static javax.swing.JLabel l_fecha2;
+    public static javax.swing.JLabel l_tiempo;
+    public static javax.swing.JLabel l_id;
+    public static javax.swing.JLabel l_img;
+    public static javax.swing.JLabel l_scramble;
+    public static javax.swing.JTextField t_fecha;
+    public static javax.swing.JTextField t_hora;
+    public static javax.swing.JTextField t_id;
+    public static javax.swing.JTextField t_scramble;
+    public static javax.swing.JTextField t_tiempo;
 }
