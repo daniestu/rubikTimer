@@ -6,6 +6,7 @@
 package controller;
 
 import client.Principal;
+import client.ScramblePreview;
 import java.awt.Color;
 import model.Cubo;
 
@@ -32,66 +33,129 @@ public class CuboDao {
         
         return c;
     }
-    public static void establecerCubo (Cubo c){
-        Principal.u1.setBackground(c.getU1());
-        Principal.u2.setBackground(c.getU2());
-        Principal.u3.setBackground(c.getU3());
-        Principal.u4.setBackground(c.getU4());
-        Principal.u5.setBackground(c.getU5());
-        Principal.u6.setBackground(c.getU6());
-        Principal.u7.setBackground(c.getU7());
-        Principal.u8.setBackground(c.getU8());
-        Principal.u9.setBackground(c.getU9());
+    public static void establecerCubo (Cubo c, int opcion){
+        if (opcion == 0) {
+            Principal.u1.setBackground(c.getU1());
+            Principal.u2.setBackground(c.getU2());
+            Principal.u3.setBackground(c.getU3());
+            Principal.u4.setBackground(c.getU4());
+            Principal.u5.setBackground(c.getU5());
+            Principal.u6.setBackground(c.getU6());
+            Principal.u7.setBackground(c.getU7());
+            Principal.u8.setBackground(c.getU8());
+            Principal.u9.setBackground(c.getU9());
+
+            Principal.f1.setBackground(c.getF1());
+            Principal.f2.setBackground(c.getF2());
+            Principal.f3.setBackground(c.getF3());
+            Principal.f4.setBackground(c.getF4());
+            Principal.f5.setBackground(c.getF5());
+            Principal.f6.setBackground(c.getF6());
+            Principal.f7.setBackground(c.getF7());
+            Principal.f8.setBackground(c.getF8());
+            Principal.f9.setBackground(c.getF9());
+
+            Principal.d1.setBackground(c.getD1());
+            Principal.d2.setBackground(c.getD2());
+            Principal.d3.setBackground(c.getD3());
+            Principal.d4.setBackground(c.getD4());
+            Principal.d5.setBackground(c.getD5());
+            Principal.d6.setBackground(c.getD6());
+            Principal.d7.setBackground(c.getD7());
+            Principal.d8.setBackground(c.getD8());
+            Principal.d9.setBackground(c.getD9());
+
+            Principal.r1.setBackground(c.getR1());
+            Principal.r2.setBackground(c.getR2());
+            Principal.r3.setBackground(c.getR3());
+            Principal.r4.setBackground(c.getR4());
+            Principal.r5.setBackground(c.getR5());
+            Principal.r6.setBackground(c.getR6());
+            Principal.r7.setBackground(c.getR7());
+            Principal.r8.setBackground(c.getR8());
+            Principal.r9.setBackground(c.getR9());
+
+            Principal.l1.setBackground(c.getL1());
+            Principal.l2.setBackground(c.getL2());
+            Principal.l3.setBackground(c.getL3());
+            Principal.l4.setBackground(c.getL4());
+            Principal.l5.setBackground(c.getL5());
+            Principal.l6.setBackground(c.getL6());
+            Principal.l7.setBackground(c.getL7());
+            Principal.l8.setBackground(c.getL8());
+            Principal.l9.setBackground(c.getL9());
+
+            Principal.b1.setBackground(c.getB1());
+            Principal.b2.setBackground(c.getB2());
+            Principal.b3.setBackground(c.getB3());
+            Principal.b4.setBackground(c.getB4());
+            Principal.b5.setBackground(c.getB5());
+            Principal.b6.setBackground(c.getB6());
+            Principal.b7.setBackground(c.getB7());
+            Principal.b8.setBackground(c.getB8());
+            Principal.b9.setBackground(c.getB9());
+        }else if (opcion == 1) {
+            ScramblePreview.u1.setBackground(c.getU1());
+            ScramblePreview.u2.setBackground(c.getU2());
+            ScramblePreview.u3.setBackground(c.getU3());
+            ScramblePreview.u4.setBackground(c.getU4());
+            ScramblePreview.u5.setBackground(c.getU5());
+            ScramblePreview.u6.setBackground(c.getU6());
+            ScramblePreview.u7.setBackground(c.getU7());
+            ScramblePreview.u8.setBackground(c.getU8());
+            ScramblePreview.u9.setBackground(c.getU9());
+
+            ScramblePreview.f1.setBackground(c.getF1());
+            ScramblePreview.f2.setBackground(c.getF2());
+            ScramblePreview.f3.setBackground(c.getF3());
+            ScramblePreview.f4.setBackground(c.getF4());
+            ScramblePreview.f5.setBackground(c.getF5());
+            ScramblePreview.f6.setBackground(c.getF6());
+            ScramblePreview.f7.setBackground(c.getF7());
+            ScramblePreview.f8.setBackground(c.getF8());
+            ScramblePreview.f9.setBackground(c.getF9());
+
+            ScramblePreview.d1.setBackground(c.getD1());
+            ScramblePreview.d2.setBackground(c.getD2());
+            ScramblePreview.d3.setBackground(c.getD3());
+            ScramblePreview.d4.setBackground(c.getD4());
+            ScramblePreview.d5.setBackground(c.getD5());
+            ScramblePreview.d6.setBackground(c.getD6());
+            ScramblePreview.d7.setBackground(c.getD7());
+            ScramblePreview.d8.setBackground(c.getD8());
+            ScramblePreview.d9.setBackground(c.getD9());
+
+            ScramblePreview.r1.setBackground(c.getR1());
+            ScramblePreview.r2.setBackground(c.getR2());
+            ScramblePreview.r3.setBackground(c.getR3());
+            ScramblePreview.r4.setBackground(c.getR4());
+            ScramblePreview.r5.setBackground(c.getR5());
+            ScramblePreview.r6.setBackground(c.getR6());
+            ScramblePreview.r7.setBackground(c.getR7());
+            ScramblePreview.r8.setBackground(c.getR8());
+            ScramblePreview.r9.setBackground(c.getR9());
+
+            ScramblePreview.l1.setBackground(c.getL1());
+            ScramblePreview.l2.setBackground(c.getL2());
+            ScramblePreview.l3.setBackground(c.getL3());
+            ScramblePreview.l4.setBackground(c.getL4());
+            ScramblePreview.l5.setBackground(c.getL5());
+            ScramblePreview.l6.setBackground(c.getL6());
+            ScramblePreview.l7.setBackground(c.getL7());
+            ScramblePreview.l8.setBackground(c.getL8());
+            ScramblePreview.l9.setBackground(c.getL9());
+
+            ScramblePreview.b1.setBackground(c.getB1());
+            ScramblePreview.b2.setBackground(c.getB2());
+            ScramblePreview.b3.setBackground(c.getB3());
+            ScramblePreview.b4.setBackground(c.getB4());
+            ScramblePreview.b5.setBackground(c.getB5());
+            ScramblePreview.b6.setBackground(c.getB6());
+            ScramblePreview.b7.setBackground(c.getB7());
+            ScramblePreview.b8.setBackground(c.getB8());
+            ScramblePreview.b9.setBackground(c.getB9());
+        }
         
-        Principal.f1.setBackground(c.getF1());
-        Principal.f2.setBackground(c.getF2());
-        Principal.f3.setBackground(c.getF3());
-        Principal.f4.setBackground(c.getF4());
-        Principal.f5.setBackground(c.getF5());
-        Principal.f6.setBackground(c.getF6());
-        Principal.f7.setBackground(c.getF7());
-        Principal.f8.setBackground(c.getF8());
-        Principal.f9.setBackground(c.getF9());
-        
-        Principal.d1.setBackground(c.getD1());
-        Principal.d2.setBackground(c.getD2());
-        Principal.d3.setBackground(c.getD3());
-        Principal.d4.setBackground(c.getD4());
-        Principal.d5.setBackground(c.getD5());
-        Principal.d6.setBackground(c.getD6());
-        Principal.d7.setBackground(c.getD7());
-        Principal.d8.setBackground(c.getD8());
-        Principal.d9.setBackground(c.getD9());
-        
-        Principal.r1.setBackground(c.getR1());
-        Principal.r2.setBackground(c.getR2());
-        Principal.r3.setBackground(c.getR3());
-        Principal.r4.setBackground(c.getR4());
-        Principal.r5.setBackground(c.getR5());
-        Principal.r6.setBackground(c.getR6());
-        Principal.r7.setBackground(c.getR7());
-        Principal.r8.setBackground(c.getR8());
-        Principal.r9.setBackground(c.getR9());
-        
-        Principal.l1.setBackground(c.getL1());
-        Principal.l2.setBackground(c.getL2());
-        Principal.l3.setBackground(c.getL3());
-        Principal.l4.setBackground(c.getL4());
-        Principal.l5.setBackground(c.getL5());
-        Principal.l6.setBackground(c.getL6());
-        Principal.l7.setBackground(c.getL7());
-        Principal.l8.setBackground(c.getL8());
-        Principal.l9.setBackground(c.getL9());
-        
-        Principal.b1.setBackground(c.getB1());
-        Principal.b2.setBackground(c.getB2());
-        Principal.b3.setBackground(c.getB3());
-        Principal.b4.setBackground(c.getB4());
-        Principal.b5.setBackground(c.getB5());
-        Principal.b6.setBackground(c.getB6());
-        Principal.b7.setBackground(c.getB7());
-        Principal.b8.setBackground(c.getB8());
-        Principal.b9.setBackground(c.getB9());
     }
     
     public static Cubo generarMovimiento(Cubo c_ant, String mov){
