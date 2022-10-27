@@ -24,20 +24,49 @@ public class SolveDao {
         solves.stream().forEach((Solve s) -> {
             if (accion == 0) {
                 if (s.getNum() < 10) {
-                    model.addElement("0" + s.getNum() + "     " + s.getTiempo());
+                    if (s.getDnf()) {
+                        model.addElement("0" + s.getNum() + "     DNF");
+                    }else{
+                        model.addElement("0" + s.getNum() + "     " + s.getTiempo());
+                    }
                 } else {
                     if (s.getNum() < 100) {
-                        model.addElement(s.getNum() + "     " + s.getTiempo());
+                        if (s.getDnf()) {
+                            model.addElement(s.getNum() + "     DNF");
+                        }else{
+                            model.addElement(s.getNum() + "     " + s.getTiempo());
+                        }
                     } else {
                         if (s.getNum() < 1000) {
-                            model.addElement(s.getNum() + "   " + s.getTiempo());
+                            if (s.getDnf()) {
+                                model.addElement(s.getNum() + "   DNF");
+                            }else{
+                                model.addElement(s.getNum() + "   " + s.getTiempo());
+                            }
                         } else {
-                            model.addElement(s.getNum() + "  " + s.getTiempo());
+                            if (s.getNum() < 10000) {
+                                if (s.getDnf()) {
+                                    model.addElement(s.getNum() + "  DNF");
+                                }else{
+                                    model.addElement(s.getNum() + "  " + s.getTiempo());
+                                }
+                            } else{
+                                if (s.getDnf()) {
+                                    model.addElement(s.getNum() + " DNF");
+                                }else{
+                                    model.addElement(s.getNum() + " " + s.getTiempo());
+                                }
+                            }
                         }
                     }
                 }
             }else{
-                model.addElement(s.getTiempo());
+                if (s.getDnf()) {
+                    model.addElement("DNF");
+                }else{
+                    model.addElement(s.getTiempo());
+                }
+
             }
             
         });

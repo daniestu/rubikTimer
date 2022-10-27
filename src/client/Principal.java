@@ -22,7 +22,6 @@ import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.border.CompoundBorder;
 import model.Cubo;
@@ -30,19 +29,22 @@ import controller.CuboDao;
 import controller.SesionDao;
 import controller.SolveDao;
 import java.text.ParseException;
+import java.util.Date;
+import java.util.Locale;
+import javax.swing.JFileChooser;
 import model.AVG;
 import model.Sesion;
 import model.Solve;
 import utilities.CronometroUtil;
 import utilities.FicheroUtil;
 import utilities.PrincipalUtil;
+import utilities.Validations;
 
 /**
  *
  * @author Dani
  */
 public final class Principal extends JFrame implements KeyListener {
-
     public static Properties prop = new Properties();
     public static File ficheroSesion;
     
@@ -54,23 +56,27 @@ public final class Principal extends JFrame implements KeyListener {
     public static boolean ocultar_preview;
     public static boolean pulsacion_larga;
     public static boolean cronometro_raton;
+    public static boolean inspeccionActivada;
     public static boolean inspeccion;
+    public static boolean comenzar;
     public static int tiempo_inspeccion;
+    public static String idioma;
     
     public static double anchoActual = 0;
     public static double altoActual = 0;
     
     public static ArrayList<Solve> solves = new ArrayList();
     public static ArrayList<String> scrambles = new ArrayList<>();
-    public boolean corriendo = false;
-    private boolean sufic = false;
+    public static boolean corriendo = false;
+    public static boolean corriendo_inspeccion = false;
+    public static boolean sufic = false;
     public static Solve mejor;
     public static Solve peor;
-    public static AVG avg = new AVG("", new ArrayList<Solve>()), currentAo5 = new AVG("", new ArrayList<Solve>()), currentAo12 = new AVG("", new ArrayList<Solve>()), currentAo100 = new AVG("", new ArrayList<Solve>());
-    public Timer t, t2, t3, t4;
-    public static int m, s, cs, ms;
+    public static AVG avg = new AVG("", new ArrayList<Solve>(), false), currentAo5 = new AVG("", new ArrayList<Solve>(), false), currentAo12 = new AVG("", new ArrayList<Solve>(), false), currentAo100 = new AVG("", new ArrayList<Solve>(), false);
+    public static Timer t, t2, t3, t4,t_inspeccion;
+    public static int m, s, cs, ms, s_inspeccion;
     public static String movimientos[] = {"R2", "U2", "L2", "D2", "F2", "B2", "R", "U", "L", "D", "F", "B", "R'", "U'", "L'", "D'", "F'", "B'"};
-    public DefaultListCellRenderer listRenderer = new DefaultListCellRenderer();
+    public static DefaultListCellRenderer listRenderer = new DefaultListCellRenderer();
     
     ImageIcon iconLogo;
     ImageIcon iconCerrar;
@@ -81,6 +87,8 @@ public final class Principal extends JFrame implements KeyListener {
     ImageIcon iconMaximizarHover;
     
     public static Color colorTiempo = new java.awt.Color(51, 51, 51);
+    
+    public static String importError = "Ha ocurrido un error al importar los tiempos.";
     
     public ActionListener sec = (ActionEvent e) -> {
         if (!sufic) {
@@ -101,31 +109,40 @@ public final class Principal extends JFrame implements KeyListener {
         cs = 0;
         ms = 0;
         
-        CronometroUtil.actualizarTiempo();
+        CronometroUtil.actualizarTiempo(0);
     };
     public ActionListener centesima = (ActionEvent e) -> {
         ++cs;
         if (cs == 10) {
             cs = 0;
         }
-        CronometroUtil.actualizarTiempo();
+        CronometroUtil.actualizarTiempo(0);
     };
     public ActionListener milesima = (ActionEvent e) -> {
         ++ms;
         if (ms == 10) {
             ms = 0;
         }
-        CronometroUtil.actualizarTiempo();
+        CronometroUtil.actualizarTiempo(0);
+    };
+    
+    public ActionListener sec_inspeccion = (ActionEvent e) -> {
+        --s_inspeccion;
+        CronometroUtil.actualizarTiempo(1);
     };
 
     Principal() {
         setIconImage(getIconImage());
         ficheroSesion = new File("sesiones/Default");
-
         try {
             init();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un problema al arrancar la aplicación", "ERROR", JOptionPane.ERROR_MESSAGE);
+            String lang = Locale.getDefault().toString();
+            if (lang.split("_")[0].equals("es")) {
+                PrincipalUtil.Error("Ha ocurrido un problema al arrancar la aplicación.");
+            }else {
+                PrincipalUtil.Error("An error has occurred while starting the application.");
+            }
             System.exit(-1);
         }
         
@@ -138,6 +155,7 @@ public final class Principal extends JFrame implements KeyListener {
         t2 = new Timer(100, centesima);
         t3 = new Timer(10, milesima);
         t4 = new Timer (1000, sec);
+        t_inspeccion = new Timer (1000, sec_inspeccion);
 
         this.setUndecorated(true);
         this.addKeyListener(this);
@@ -173,12 +191,15 @@ public final class Principal extends JFrame implements KeyListener {
         l_ao12_2 = new javax.swing.JLabel();
         l_ao100_2 = new javax.swing.JLabel();
         l_totalavg_2 = new javax.swing.JLabel();
+        l_fondo = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuCerrar = new javax.swing.JMenu();
         jMenuMinimizar = new javax.swing.JMenu();
         jMenuLogo = new javax.swing.JMenu();
         m_addScramble = new javax.swing.JMenuItem();
+        m_importar = new javax.swing.JMenuItem();
+        m_exportar = new javax.swing.JMenuItem();
         m_new = new javax.swing.JMenuItem();
         m_add = new javax.swing.JMenuItem();
         m_info = new javax.swing.JMenuItem();
@@ -282,10 +303,10 @@ public final class Principal extends JFrame implements KeyListener {
         jMenuBar1.setPreferredSize(new java.awt.Dimension(pantalla.width, (pantalla.height * 35)/1080));
         
         //MENU ITEMS
+        int menuItemsSize = (pantalla.height*22)/1080;
         jMenuLogo.setIcon(iconLogo);
         jMenuLogo.enable(false);
-        jMenu1.setText("Opciones");
-        jMenu1.setFont(new java.awt.Font("Segoe UI", 0, ((pantalla.height*22)/1080))); // NOI18N
+        jMenu1.setFont(new java.awt.Font("Segoe UI", 0, menuItemsSize)); // NOI18N
         jMenuCerrar.setIcon(iconCerrar);
         jMenuCerrar.setBackground(Color.red);
         jMenuCerrar.disable();
@@ -326,7 +347,6 @@ public final class Principal extends JFrame implements KeyListener {
 
         //SUBMENU ITEMS
         int fontSize = (pantalla.height * 20) / 1080;
-        m_addScramble.setText("Scramble personalizado");
         m_addScramble.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_addScramble.addActionListener((java.awt.event.ActionEvent evt) -> {
             Frame f[] = JFrame.getFrames();
@@ -337,8 +357,28 @@ public final class Principal extends JFrame implements KeyListener {
             }
             NuevoScramble nuevoScramble = new NuevoScramble();
         });
+        m_importar.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
+        m_importar.addActionListener((java.awt.event.ActionEvent evt) -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.showOpenDialog(fileChooser);
+            File f = fileChooser.getSelectedFile();
+            if (f != null){
+                if (!FicheroUtil.importarSolves(f, ficheroSesion)) {
+                    PrincipalUtil.Error(importError);
+                }
+            }
+        });
+        m_exportar.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
+        m_exportar.addActionListener((java.awt.event.ActionEvent evt) -> {
+            Frame f[] = JFrame.getFrames();
+            for (Frame i : f) {
+                if (i.getTitle().equals("Exportar sesión")) {
+                    i.dispose();
+                }
+            }
+            Exportar exportar = new Exportar();
+        });
         m_new.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
-        m_new.setText("Nueva Sesión");
         m_new.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_new.addActionListener((java.awt.event.ActionEvent evt) -> {
             Frame f[] = JFrame.getFrames();
@@ -350,7 +390,6 @@ public final class Principal extends JFrame implements KeyListener {
             NuevaSesion nombreSesion = new NuevaSesion();
         });
         m_add.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
-        m_add.setText("Agregar tiempo");
         m_add.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_add.addActionListener((java.awt.event.ActionEvent evt) -> {
             Frame f[] = JFrame.getFrames();
@@ -362,7 +401,6 @@ public final class Principal extends JFrame implements KeyListener {
             NuevoSolve nuevoSolve = new NuevoSolve();
         });
         m_info.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
-        m_info.setText("Información de la sesión");
         m_info.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_info.addActionListener((java.awt.event.ActionEvent evt) -> {
             Sesion s1 = SesionDao.infoSesion();
@@ -375,7 +413,6 @@ public final class Principal extends JFrame implements KeyListener {
             InformacionSesion informacionSesion = new InformacionSesion(s1);
         });
         m_cerrar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
-        m_cerrar.setText("Cerrar");
         m_cerrar.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_cerrar.addActionListener((java.awt.event.ActionEvent evt) -> {
             Frame[] frames = Principal.getFrames();
@@ -384,7 +421,6 @@ public final class Principal extends JFrame implements KeyListener {
             }
         });
         m_sig.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        m_sig.setText("Nueva mezcla");
         m_sig.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_sig.addActionListener((java.awt.event.ActionEvent evt) -> {
             String scram = PrincipalUtil.generarScramble();
@@ -393,7 +429,6 @@ public final class Principal extends JFrame implements KeyListener {
             CuboDao.establecerCubo(c, 0);
         });
         m_ant.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
-        m_ant.setText("Mezcla Anterior");
         m_ant.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_ant.setEnabled(false);
         m_ant.addActionListener((java.awt.event.ActionEvent evt) -> {
@@ -408,7 +443,6 @@ public final class Principal extends JFrame implements KeyListener {
         });
         
         m_pref.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        m_pref.setText("Configuración");
         m_pref.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         m_pref.addActionListener((java.awt.event.ActionEvent evt) -> {
             Frame f[] = JFrame.getFrames();
@@ -421,6 +455,8 @@ public final class Principal extends JFrame implements KeyListener {
         });
 
         jMenu1.add(m_addScramble);
+        jMenu1.add(m_importar);
+        jMenu1.add(m_exportar);
         jMenu1.add(m_ant);
         jMenu1.add(m_sig);
         jMenu1.add(m_add);
@@ -456,7 +492,7 @@ public final class Principal extends JFrame implements KeyListener {
         //CRONOMETRO
         t_tiempo.setEditable(false);
         t_tiempo.setBackground(new java.awt.Color(205, 242, 154));
-        t_tiempo.setFont(new java.awt.Font("Segoe UI", 0, (pantalla.width * 230) /1920));
+        t_tiempo.setFont(new java.awt.Font("Segoe UI", 0, Validations.menorSize((pantalla.width * 230) /1920, (pantalla.height * 230) /1080)));
         t_tiempo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_tiempo.setText("00:00:00");
         t_tiempo.setBorder(null);
@@ -495,7 +531,7 @@ public final class Principal extends JFrame implements KeyListener {
             }
         });
 
-        l_scramble.setFont(new java.awt.Font("Segoe UI", 0, (pantalla.width * 50) /1920));
+        l_scramble.setFont(new java.awt.Font("Segoe UI", 0, Validations.menorSize((pantalla.width * 50) /1920, (pantalla.height * 50) /1080)));
         String scram = PrincipalUtil.generarScramble();
         l_scramble.setText(scram);
         Cubo c = CuboDao.generarCubo(scram);
@@ -527,7 +563,7 @@ public final class Principal extends JFrame implements KeyListener {
         });
 
         Listado.setBackground(new java.awt.Color(255, 204, 204));
-        Listado.setFont(new java.awt.Font("Segoe UI", 0, (pantalla.width * 30) / 1920)); // NOI18N
+        Listado.setFont(new java.awt.Font("Segoe UI", 0, Validations.menorSize((pantalla.width * 30) / 1920, (pantalla.height * 30) / 1080))); // NOI18N
         Listado.setEnabled(true);
         Listado.setFocusable(false);
         Listado.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -566,18 +602,17 @@ public final class Principal extends JFrame implements KeyListener {
         jPanelGeneral.add(t_tiempo, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 1) / 1920, (pantalla.height * 222) / 1080, (pantalla.width * 1918) / 1920, (pantalla.height * 200) / 1080));
 
         //ETIQUETA DE SESIÓN Y LISTADO DE SESIONES
-        campo_sesion.setFont(new java.awt.Font("Segoe UI", 0, 30));
+        campo_sesion.setFont(new java.awt.Font("Segoe UI", 0, Validations.menorSize((pantalla.height * 30) / 1080, (pantalla.width * 30) / 1920)));
         campo_sesion.setText(ficheroSesion.getName());
         campo_sesion.setEditable(false);
         campo_sesion.setFocusable(false);
         campo_sesion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        l_snombre.setFont(new java.awt.Font("Segoe UI", 0, (pantalla.height * 30) / 1080)); // NOI18N
+        l_snombre.setFont(new java.awt.Font("Segoe UI", 0, Validations.menorSize((pantalla.height * 30) / 1080, (pantalla.width * 30) / 1920)));
         l_snombre.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        l_snombre.setText("Sesión");
 
         jComboBox1.setModel(PrincipalUtil.cargarModeloComboBox());
-        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, (pantalla.height * 30) / 1080));
+        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, Validations.menorSize((pantalla.height * 30) / 1080, (pantalla.width * 30) / 1920)));
         jComboBox1.setBorder(null);
         listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER); // center-aligned items
         jComboBox1.setRenderer(listRenderer);
@@ -600,17 +635,13 @@ public final class Principal extends JFrame implements KeyListener {
                 formMouseReleased(evt);
             }
         });
-        int estadisticaFontSize = (pantalla.height * 26) / 1080;
+        int estadisticaFontSize = Validations.menorSize((pantalla.height * 26) / 1080, (pantalla.width * 26) / 1920);
         l_total.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
-        l_total.setBackground(Color.red);
-        l_total.setText(" Total");
         l_total.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
         l_total_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
-        l_total_2.setBackground(Color.red);
         l_total_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
 
         l_best.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
-        l_best.setText(" Mejor");
         l_best.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
         l_best_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
         l_best_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
@@ -624,7 +655,6 @@ public final class Principal extends JFrame implements KeyListener {
         });
 
         l_worst.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
-        l_worst.setText(" Peor");
         l_worst.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
         l_worst_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
         l_worst_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
@@ -649,16 +679,6 @@ public final class Principal extends JFrame implements KeyListener {
                 if ( !(l_ao5_2.getText().equals("")) ) {
                     l_ao5_2MouseClicked(evt);
                 }
-            }
-
-            private void l_ao5_2MouseClicked(MouseEvent evt) {
-                Frame f[] = JFrame.getFrames();
-                for (Frame i : f) {
-                    if (i.getTitle().equals("Información AVG")) {
-                        i.dispose();
-                    }
-                }
-                InformacionAVG informacionAVG = new InformacionAVG(currentAo5);
             }
         });
 
@@ -710,7 +730,6 @@ public final class Principal extends JFrame implements KeyListener {
         });
 
         l_totalavg.setFont(new java.awt.Font("Times New Roman", 1, estadisticaFontSize));
-        l_totalavg.setText(" Media");
         l_totalavg.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, 0, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
         l_totalavg_2.setFont(new java.awt.Font("Times New Roman", 0, estadisticaFontSize));
         l_totalavg_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, 0, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
@@ -739,15 +758,17 @@ public final class Principal extends JFrame implements KeyListener {
         jPanelAside.add(l_snombre, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 30) / 1920, (pantalla.height * 10) / 1080, (pantalla.width * 160) / 1920, (pantalla.height * 40) / 1080));
         jPanelAside.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 4) / 1920, (pantalla.height * 55) / 1080, (pantalla.width * 212) / 1920, (pantalla.height * 40) / 1080));
         
-        
         int tamanioCuadrado = (pantalla.height * 30) / 1080;
-        int tamanioPreviewAlto = (tamanioCuadrado * 9) + ((pantalla.height * 20) / 1080);
-        int tamanioPreviewAncho = (tamanioCuadrado * 12) + ((pantalla.width * 20) / 1920);
+        int tamanioPreviewAlto = (tamanioCuadrado * 9) + 24;
+        int tamanioPreviewAncho = (tamanioCuadrado * 12) + 26;
         
         jPanelPreview.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        //jPanelPreview.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanelPreview.setBackground(new java.awt.Color(205, 242, 154));
+        jPanelPreview.setOpaque(false);
         
+        ImageIcon fondo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/sky.jpg"));
+        newimg = fondo.getImage().getScaledInstance(pantalla.width-1, pantalla.height - ((pantalla.height * 35)/1080)-1, java.awt.Image.SCALE_SMOOTH);
+        l_fondo.setIcon(new ImageIcon(newimg));
+        l_fondo.setVisible(false);
         
         u1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         u1.setBackground(Color.white);
@@ -863,68 +884,68 @@ public final class Principal extends JFrame implements KeyListener {
         b9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         b9.setBackground(Color.blue);
         
+        jPanelPreview.add(u1, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 3),10,tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(u2, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 4),10,tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(u3, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado*5),10,tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(u4, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 3),10 + tamanioCuadrado,tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(u5, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 4),10 + tamanioCuadrado,tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(u6, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 5),10 + tamanioCuadrado,tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(u7, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 3),10 + (tamanioCuadrado*2),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(u8, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 4),10 + (tamanioCuadrado*2),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(u9, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado*5),10 + (tamanioCuadrado*2),tamanioCuadrado,tamanioCuadrado));
         
-        jPanelPreview.add(u1, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*3) + 12, 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(u2, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*4) + 11, 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(u3, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*5) + 10, 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(u4, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*3) + 12, tamanioCuadrado+9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(u5, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*4) + 11, tamanioCuadrado+9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(u6, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*5) + 10, tamanioCuadrado+9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(u7, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*3) + 12, (tamanioCuadrado * 2) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(u8, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*4) + 11, (tamanioCuadrado * 2) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(u9, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*5) + 10, (tamanioCuadrado * 2) + 8, tamanioCuadrado, tamanioCuadrado));
+        jPanelPreview.add(r1, new org.netbeans.lib.awtextra.AbsoluteConstraints(14 + (tamanioCuadrado * 6),12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(r2, new org.netbeans.lib.awtextra.AbsoluteConstraints(14 + (tamanioCuadrado * 7),12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(r3, new org.netbeans.lib.awtextra.AbsoluteConstraints(14 + (tamanioCuadrado * 8),12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(r4, new org.netbeans.lib.awtextra.AbsoluteConstraints(14 + (tamanioCuadrado * 6),12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(r5, new org.netbeans.lib.awtextra.AbsoluteConstraints(14 + (tamanioCuadrado * 7),12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(r6, new org.netbeans.lib.awtextra.AbsoluteConstraints(14 + (tamanioCuadrado * 8),12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(r7, new org.netbeans.lib.awtextra.AbsoluteConstraints(14 + (tamanioCuadrado * 6),12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(r8, new org.netbeans.lib.awtextra.AbsoluteConstraints(14 + (tamanioCuadrado * 7),12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(r9, new org.netbeans.lib.awtextra.AbsoluteConstraints(14 + (tamanioCuadrado * 8),12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
         
-        jPanelPreview.add(r1, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*6) + 12, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(r2, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*7) + 10, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(r3, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*8) + 9, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(r4, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*6) + 12, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(r5, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*7) + 10, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(r6, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*8) + 9, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(r7, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*6) + 12, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(r8, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*7) + 10, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(r9, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*8) + 9, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
+        jPanelPreview.add(d1, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 3),14 + (tamanioCuadrado * 6),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(d2, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 4),14 + (tamanioCuadrado * 6),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(d3, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 5),14 + (tamanioCuadrado * 6),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(d4, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 3),14 + (tamanioCuadrado * 7),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(d5, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 4),14 + (tamanioCuadrado * 7),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(d6, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 5),14 + (tamanioCuadrado * 7),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(d7, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 3),14 + (tamanioCuadrado * 8),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(d8, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 4),14 + (tamanioCuadrado * 8),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(d9, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 5),14 + (tamanioCuadrado * 8),tamanioCuadrado,tamanioCuadrado));
         
-        jPanelPreview.add(d1, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*3) + 12, (tamanioCuadrado * 6) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(d2, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*4) + 11, (tamanioCuadrado * 6) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(d3, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*5) + 10, (tamanioCuadrado * 6) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(d4, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*3) + 12, (tamanioCuadrado * 7) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(d5, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*4) + 11, (tamanioCuadrado * 7) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(d6, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*5) + 10, (tamanioCuadrado * 7) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(d7, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*3) + 12, (tamanioCuadrado * 8) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(d8, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*4) + 11, (tamanioCuadrado * 8) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(d9, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*5) + 10, (tamanioCuadrado * 8) + 8, tamanioCuadrado, tamanioCuadrado));
+        jPanelPreview.add(l1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10,12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(l2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10 + tamanioCuadrado,12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(l3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10 + (tamanioCuadrado * 2),12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(l4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10,12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(l5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10 + tamanioCuadrado,12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(l6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10 + (tamanioCuadrado * 2),12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(l7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10,12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(l8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10 + tamanioCuadrado,12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(l9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10 + (tamanioCuadrado * 2),12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
         
-        jPanelPreview.add(l1, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(l2, new org.netbeans.lib.awtextra.AbsoluteConstraints(tamanioCuadrado + 11, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(l3, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*2) + 10, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(l4, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(l5, new org.netbeans.lib.awtextra.AbsoluteConstraints(tamanioCuadrado + 11, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(l6, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*2) + 10, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(l7, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(l8, new org.netbeans.lib.awtextra.AbsoluteConstraints(tamanioCuadrado + 11, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(l9, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*2) + 10, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
+        jPanelPreview.add(f1, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 3),12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(f2, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 4),12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(f3, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 5),12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(f4, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 3),12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(f5, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 4),12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(f6, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 5),12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(f7, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 3),12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(f8, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 4),12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(f9, new org.netbeans.lib.awtextra.AbsoluteConstraints(12 + (tamanioCuadrado * 5),12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
         
-        jPanelPreview.add(f1, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*3) + 12, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(f2, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*4) + 11, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(f3, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*5) + 10, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(f4, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*3) + 12, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(f5, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*4) + 11, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(f6, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*5) + 10, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(f7, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*3) + 12, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(f8, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*4) + 11, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(f9, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*5) + 10, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
-        
-        jPanelPreview.add(b1, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*9) + 11, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(b2, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*10) + 9, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(b3, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*11) + 8, (tamanioCuadrado * 3) + 10, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(b4, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*9) + 11, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(b5, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*10) + 9, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(b6, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*11) + 8, (tamanioCuadrado * 4) + 9, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(b7, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*9) + 11, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(b8, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*10) + 9, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
-        jPanelPreview.add(b9, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado*11) + 8, (tamanioCuadrado * 5) + 8, tamanioCuadrado, tamanioCuadrado));
+        jPanelPreview.add(b1, new org.netbeans.lib.awtextra.AbsoluteConstraints(16 + (tamanioCuadrado * 9),12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(b2, new org.netbeans.lib.awtextra.AbsoluteConstraints(16 + (tamanioCuadrado * 10),12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(b3, new org.netbeans.lib.awtextra.AbsoluteConstraints(16 + (tamanioCuadrado * 11),12 + (tamanioCuadrado * 3),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(b4, new org.netbeans.lib.awtextra.AbsoluteConstraints(16 + (tamanioCuadrado * 9),12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(b5, new org.netbeans.lib.awtextra.AbsoluteConstraints(16 + (tamanioCuadrado * 10),12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(b6, new org.netbeans.lib.awtextra.AbsoluteConstraints(16 + (tamanioCuadrado * 11),12 + (tamanioCuadrado * 4),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(b7, new org.netbeans.lib.awtextra.AbsoluteConstraints(16 + (tamanioCuadrado * 9),12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(b8, new org.netbeans.lib.awtextra.AbsoluteConstraints(16 + (tamanioCuadrado * 10),12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
+        jPanelPreview.add(b9, new org.netbeans.lib.awtextra.AbsoluteConstraints(16 + (tamanioCuadrado * 11),12 + (tamanioCuadrado * 5),tamanioCuadrado,tamanioCuadrado));
         
         jPanelGeneral.add(jPanelPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(pantalla.width - tamanioPreviewAncho-2, pantalla.height - tamanioPreviewAlto - ((pantalla.height * 35) / 1080), tamanioPreviewAncho, tamanioPreviewAlto - 2));
+        jPanelGeneral.add(l_fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 0, pantalla.width -2, pantalla.height - ((pantalla.height * 35)/1080) -1));
         
         getContentPane().add(jPanelGeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, pantalla.width, pantalla.height - ((pantalla.height * 35)/1080)));
         
@@ -1033,10 +1054,18 @@ public final class Principal extends JFrame implements KeyListener {
         }
     }
     
-    @Override
-    public void keyTyped(KeyEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void l_ao5_2MouseClicked(MouseEvent evt) {
+        Frame f[] = JFrame.getFrames();
+        for (Frame i : f) {
+            if (i.getTitle().equals("Información AVG")) {
+                i.dispose();
+            }
+        }
+        InformacionAVG informacionAVG = new InformacionAVG(currentAo5);
     }
+    
+    @Override
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -1047,58 +1076,100 @@ public final class Principal extends JFrame implements KeyListener {
     }
     
     private void tecla_presionada() {
-        if (corriendo) {
-            t.stop();
-            t2.stop();
-            t3.stop();
+        if (inspeccion) {
+            if (!corriendo_inspeccion) {
+                s_inspeccion = tiempo_inspeccion;
+                t_tiempo.setText("00:00:00");
+                if (pulsacion_larga) {
+                    t4.start();
+                    if (sufic) {
+                        t_tiempo.setText(tiempo_inspeccion + "");
+                        t_tiempo.setForeground(new java.awt.Color(0, 204, 0));
 
-            jPanelAside.setVisible(true);
-            jPanelScramble.setVisible(true);
-            jPanelPreview.setVisible(true);
-            jComboBox1.setEnabled(true);
-            jMenu1.setEnabled(true);
-
-            try {
-                FicheroUtil.actualizarFichero(t_tiempo.getText(), l_scramble.getText());
-            } catch (IOException | ParseException ex) {
-                ex.printStackTrace();
-            }
-
-            String scram = PrincipalUtil.generarScramble();
-            l_scramble.setText(scram);
-            Cubo c = CuboDao.generarCubo(scram);
-            CuboDao.establecerCubo(c, 0);
-            corriendo = false;
-        } else {
-            m = 0;
-            s = 0;
-            ms = 0;
-            cs = 0;
-            t_tiempo.setText("00:00:00");
-
-            if (pulsacion_larga) {
-                t4.start();
-                if (sufic) {
+                        if (ocultar_todo) {
+                            jPanelAside.setVisible(false);
+                            jPanelScramble.setVisible(false);
+                            jPanelPreview.setVisible(false);
+                        }
+                    }else{
+                        t_tiempo.setForeground(java.awt.Color.red);
+                    }
+                }else{
+                    t_tiempo.setText(tiempo_inspeccion + "");
                     t_tiempo.setForeground(new java.awt.Color(0, 204, 0));
+                    if (ocultar_todo) {
+                        jPanelAside.setVisible(false);
+                        jPanelScramble.setVisible(false);
+                        jPanelPreview.setVisible(false); 
+                    }
+                    sufic = true;
+                }
+            } else {
+                m = 0;
+                s = 0;
+                ms = 0;
+                cs = 0;
+            }
+        }else{
+            if (corriendo) {
+                t.stop();
+                t2.stop();
+                t3.stop();
 
+                jPanelAside.setVisible(true);
+                jPanelScramble.setVisible(true);
+                jPanelPreview.setVisible(true);
+                jComboBox1.setEnabled(true);
+                jMenu1.setEnabled(true);
+
+                try {
+                    FicheroUtil.actualizarFichero(t_tiempo.getText(), l_scramble.getText(), new Date(), false, false);
+                    Listado.setModel(SolveDao.cargarSolves(solves, 0));
+                    SesionDao.cargarSesion();
+                    Listado.ensureIndexIsVisible(Listado.getModel().getSize() - 1);
+                } catch (IOException | ParseException ex) {
+                    ex.printStackTrace();
+                }
+
+                String scram = PrincipalUtil.generarScramble();
+                l_scramble.setText(scram);
+                Cubo c = CuboDao.generarCubo(scram);
+                CuboDao.establecerCubo(c, 0);
+                corriendo = false;
+                
+                
+            } else {
+                m = 0;
+                s = 0;
+                ms = 0;
+                cs = 0;
+                t_tiempo.setText("00:00:00");
+
+                if (pulsacion_larga) {
+                    t4.start();
+                    if (sufic) {
+                        t_tiempo.setForeground(new java.awt.Color(0, 204, 0));
+
+                        if (ocultar_todo) {
+                            jPanelAside.setVisible(false);
+                            jPanelScramble.setVisible(false);
+                            jPanelPreview.setVisible(false);
+                        }
+                    }else{
+                        t_tiempo.setForeground(java.awt.Color.red);
+                    }
+                }else{
+                    t_tiempo.setForeground(new java.awt.Color(0, 204, 0));
                     if (ocultar_todo) {
                         jPanelAside.setVisible(false);
                         jPanelScramble.setVisible(false);
                         jPanelPreview.setVisible(false);
                     }
-                }else{
-                    t_tiempo.setForeground(java.awt.Color.red);
+                    sufic = true;
                 }
-            }else{
-                t_tiempo.setForeground(new java.awt.Color(0, 204, 0));
-                if (ocultar_todo) {
-                    jPanelAside.setVisible(false);
-                    jPanelScramble.setVisible(false);
-                    jPanelPreview.setVisible(false);
-                }
-                sufic = true;
             }
         }
+        
     }
 
     @Override
@@ -1108,26 +1179,54 @@ public final class Principal extends JFrame implements KeyListener {
         }
     }
     
-    private void tecla_soltada() {
-        if (!corriendo && sufic) {
-            t_tiempo.setForeground(colorTiempo);
-            t.start();
-            t2.start();
-            t3.start();
-            corriendo = true;
-            jComboBox1.setEnabled(false);
-            jMenu1.setEnabled(false);
-        } else {
-            if (corriendo) {
-                corriendo = false;
-                jScrollPane1.getVerticalScrollBar().setValue(jScrollPane1.getVerticalScrollBar().getMaximum());
+    public static void tecla_soltada() {
+        if (inspeccion) {
+            if (!corriendo_inspeccion && sufic) {
+                t_inspeccion.start();
+                corriendo_inspeccion = true;
+                jComboBox1.setEnabled(false);
+                jMenu1.setEnabled(false);
+            }else {
+                if (corriendo_inspeccion) {
+                    t_inspeccion.stop();
+                    corriendo_inspeccion = false;
+                    t_tiempo.setForeground(colorTiempo);
+                    t.start();
+                    t2.start();
+                    t3.start();
+                    corriendo = true;
+                    jComboBox1.setEnabled(false);
+                    jMenu1.setEnabled(false);
+                    inspeccion = false;
+                }
+                if (!sufic) {
+                    t_tiempo.setForeground(colorTiempo);
+                }
             }
-            if (!sufic) {
+            t4.stop();
+            sufic = false;
+        }else{
+            if (!corriendo && sufic) {
                 t_tiempo.setForeground(colorTiempo);
+                t.start();
+                t2.start();
+                t3.start();
+                corriendo = true;
+                jComboBox1.setEnabled(false);
+                jMenu1.setEnabled(false);
+            } else {
+                if (corriendo) {
+                    corriendo = false;
+                    jScrollPane1.getVerticalScrollBar().setValue(jScrollPane1.getVerticalScrollBar().getMaximum());
+                }
+                if (!sufic) {
+                    t_tiempo.setForeground(colorTiempo);
+                }
             }
+            t4.stop();
+            sufic = false;
         }
-        t4.stop();
-        sufic = false;
+        
     }
 
     public void init() throws FileNotFoundException, IOException {
@@ -1157,8 +1256,11 @@ public final class Principal extends JFrame implements KeyListener {
         cronometro_raton = ls_cronometro_raton.equals("1");
         
         String ls_inspeccion = prop.getProperty("inspeccion");
+        inspeccionActivada = ls_inspeccion.equals("1");
         inspeccion = ls_inspeccion.equals("1");
         tiempo_inspeccion = Integer.parseInt(prop.getProperty("segundos-inspeccion"));
+        
+        idioma = prop.getProperty("idioma");
         
         if (!ficheroSesion.exists()) {
             FileWriter fw;
@@ -1184,18 +1286,20 @@ public final class Principal extends JFrame implements KeyListener {
     }
     
     public javax.swing.JMenu jMenuLogo;
-    public javax.swing.JMenu jMenu1;
+    public static javax.swing.JMenu jMenu1;
     public javax.swing.JMenu jMenuCerrar;
     public static javax.swing.JMenuBar jMenuBar1;
-    public javax.swing.JMenuItem m_addScramble;
-    public javax.swing.JMenuItem m_new;
-    public javax.swing.JMenuItem m_add;
-    public javax.swing.JMenuItem m_info;
-    public javax.swing.JMenuItem m_cerrar;
+    public static javax.swing.JMenuItem m_addScramble;
+    public static javax.swing.JMenuItem m_importar;
+    public static javax.swing.JMenuItem m_exportar;
+    public static javax.swing.JMenuItem m_new;
+    public static javax.swing.JMenuItem m_add;
+    public static javax.swing.JMenuItem m_info;
+    public static javax.swing.JMenuItem m_cerrar;
     public javax.swing.JMenuItem jMenuMinimizar;
-    public javax.swing.JMenuItem m_sig;
+    public static javax.swing.JMenuItem m_sig;
     public static javax.swing.JMenuItem m_ant;
-    public javax.swing.JMenuItem m_pref;
+    public static javax.swing.JMenuItem m_pref;
     public static javax.swing.JPanel jPanelGeneral;
     public javax.swing.JPopupMenu.Separator jSeparator1;
     public static javax.swing.JTextField t_tiempo;
@@ -1224,7 +1328,7 @@ public final class Principal extends JFrame implements KeyListener {
     public static javax.swing.JLabel l_ao100_2;
     public static javax.swing.JLabel l_totalavg_2;
     public static javax.swing.JComboBox jComboBox1;
-    
+    public static javax.swing.JLabel l_fondo;
     
     public static javax.swing.JPanel u1;
     public static javax.swing.JPanel u2;

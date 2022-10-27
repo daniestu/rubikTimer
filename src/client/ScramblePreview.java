@@ -8,12 +8,14 @@ package client;
 import controller.CuboDao;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import model.Cubo;
 import utilities.PrincipalUtil;
+import utilities.Validations;
 
 /**
  *
@@ -103,6 +105,12 @@ public class ScramblePreview extends JFrame{
         panelGeneral.setBackground(new java.awt.Color(238, 238, 238));
         panelGeneral.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
+        int iconDimension = Validations.menorSize((pantalla.width * 30) / 1920, (pantalla.height * 30) / 1080);
+        Image newimg = iconCerrar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+        iconCerrar = new ImageIcon(newimg);
+        newimg = iconCerrarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+        iconCerrarHover = new ImageIcon(newimg);
+        
         l_cerrar.setIcon(iconCerrar);
         l_cerrar.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -138,7 +146,7 @@ public class ScramblePreview extends JFrame{
         
         int tamanioCuadrado = (pantalla.height * 40) / 1080;
         
-        panelGeneral.add(l_cerrar, new org.netbeans.lib.awtextra.AbsoluteConstraints((tamanioCuadrado * 12), 10, 30, 30));
+        panelGeneral.add(l_cerrar, new org.netbeans.lib.awtextra.AbsoluteConstraints( ((tamanioCuadrado * 12) + 40) - iconDimension - ((pantalla.width * 10) / 1920), (pantalla.height * 10) / 1080, iconDimension, iconDimension));
         
         u1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         u2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));

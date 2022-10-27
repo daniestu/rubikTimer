@@ -14,8 +14,14 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.border.BevelBorder;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 import utilities.PrincipalUtil;
+import utilities.Validations;
 
 /**
  *
@@ -29,7 +35,8 @@ public class Preferencias extends JFrame {
         this.setUndecorated(true);
         this.setVisible(true);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        this.setPreferredSize(new java.awt.Dimension(640, 308));
+        
+        int fontSize = Validations.menorSize((pantalla.width * 22) / 1920, (pantalla.height * 22) / 1080);
         
         //**VARIABLES**//
         jPanelFondo = new javax.swing.JPanel();
@@ -37,10 +44,8 @@ public class Preferencias extends JFrame {
         l_temas = new javax.swing.JLabel();
         l_titulo = new javax.swing.JLabel();
         l_segundos = new javax.swing.JLabel();
-        jRadioButtonTema1 = new javax.swing.JRadioButton();
-        jRadioButtonTema2 = new javax.swing.JRadioButton();
-        jRadioButtonTema3 = new javax.swing.JRadioButton();
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        l_idioma = new javax.swing.JLabel();
+        l_segundosInspeccion = new javax.swing.JLabel();
         jCheckBoxOcultarElementos = new javax.swing.JCheckBox();
         jCheckBoxOcultar_preview = new javax.swing.JCheckBox();
         jCheckBoxPulsacion_larga = new javax.swing.JCheckBox();
@@ -48,16 +53,19 @@ public class Preferencias extends JFrame {
         jCheckBoxTiempo_inspeccion = new javax.swing.JCheckBox();
         jPanelTitulo = new javax.swing.JPanel();
         jPanelTemas = new javax.swing.JPanel();
+        jPanelIdiomas = new javax.swing.JPanel();
         jPanelOcultarElementos = new javax.swing.JPanel();
         jPanelOcultarPreview = new javax.swing.JPanel();
         jPanelPulsacionLarga = new javax.swing.JPanel();
         jPanelCronoRaton = new javax.swing.JPanel();
         jPanelTiempo_inspeccion = new javax.swing.JPanel();
+        jPanelSegundos_inspeccion = new javax.swing.JPanel();
         jButtonAceptar = new javax.swing.JButton();
         jButton1Reset = new javax.swing.JButton();
         jButton1Cancelar = new javax.swing.JButton();
         jTextFieldSegundos = new javax.swing.JTextField();
-        
+        jComboBoxTemas = new javax.swing.JComboBox();
+        jComboBoxIdiomas = new javax.swing.JComboBox();
         
         setTitle("Configuración");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -65,7 +73,6 @@ public class Preferencias extends JFrame {
         jPanelFondo.setBackground(new java.awt.Color(255, 219, 219));
         jPanelFondo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
-        jPanelGeneral.setPreferredSize(new java.awt.Dimension(500, 500));
         jPanelGeneral.setBackground(new java.awt.Color(255, 219, 219));
         jPanelGeneral.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255,179,179)));
         jPanelGeneral.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -74,7 +81,7 @@ public class Preferencias extends JFrame {
         jPanelTitulo.setBackground(new java.awt.Color(255,179,179));
         jPanelTitulo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
-        l_titulo.setFont(new java.awt.Font("Times new roman", 1, 30)); // NOI18N
+        l_titulo.setFont(new java.awt.Font("Times new roman", 1, Validations.menorSize((pantalla.width * 30) / 1920, (pantalla.height * 30) / 1080))); // NOI18N
         l_titulo.setOpaque(true);
         l_titulo.setBackground(new java.awt.Color(255,179,179));
         l_titulo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -86,111 +93,134 @@ public class Preferencias extends JFrame {
         l_titulo.setFont(font.deriveFont(attributes));
 
         
-        jPanelTitulo.add(l_titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 600, 50));
-        jPanelGeneral.add(jPanelTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 5, 590, 45));
+        jPanelTitulo.add(l_titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, (pantalla.width * 600) / 1920, (pantalla.height * 50) / 1080));
+        jPanelGeneral.add(jPanelTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 5) / 1920, (pantalla.height * 5) / 1080, (pantalla.width * 590) / 1920, (pantalla.height * 45) / 1080));
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         jPanelTemas.setBackground(new java.awt.Color(255,219,219));
         jPanelTemas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
-        l_temas.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
+        l_temas.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
         l_temas.setOpaque(true);
         l_temas.setBackground(new java.awt.Color(255,219,219));
         l_temas.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        l_temas.setText("Temas");
+        l_temas.setText("Tema");
         
-        jPanelTemas.add(l_temas, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 70, 30));
+        jPanelTemas.add(l_temas, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 10) / 1920, 0, (pantalla.width * 100) / 1920, (pantalla.height * 30) / 1080));
         
-        buttonGroup1.add(jRadioButtonTema1);
-        buttonGroup1.add(jRadioButtonTema2);
-        buttonGroup1.add(jRadioButtonTema3);
+        jComboBoxTemas.setUI(new BasicComboBoxUI() {
+            @Override
+            protected JButton createArrowButton() {
+                JButton b = new JButton();
+                b.setBorder(BorderFactory.createEmptyBorder());
+                b.setVisible(false);
+                return b;
+            }
+        });
+        jComboBoxTemas.setModel(cargarComboBoxTemas());
+        jComboBoxTemas.setFont(new java.awt.Font("Segoe UI", 0, fontSize - 1));
+        jComboBoxTemas.setRenderer(Principal.listRenderer);
+        jComboBoxTemas.setFocusable(false);
+        jComboBoxTemas.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+                
+        jPanelTemas.add(jComboBoxTemas, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 125) / 1920, 2, (pantalla.width * 150) / 1920, (pantalla.height * 26) / 1080));
         
-        jRadioButtonTema1.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
-        jRadioButtonTema1.setBackground(new java.awt.Color(255,219,219));
-        jRadioButtonTema1.setText("Principal");
-        jRadioButtonTema1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        jRadioButtonTema1.setFocusable(false);
-        
-        jPanelTemas.add(jRadioButtonTema1, new org.netbeans.lib.awtextra.AbsoluteConstraints(95, 0, 110, 30));
-        
-        jRadioButtonTema2.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
-        jRadioButtonTema2.setBackground(new java.awt.Color(255,219,219));
-        jRadioButtonTema2.setText("Claro");
-        jRadioButtonTema2.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        jRadioButtonTema2.setFocusable(false);
-        
-        jPanelTemas.add(jRadioButtonTema2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, 80, 30));
-        
-        jRadioButtonTema3.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
-        jRadioButtonTema3.setBackground(new java.awt.Color(255,219,219));
-        jRadioButtonTema3.setText("Oscuro");
-        jRadioButtonTema3.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        jRadioButtonTema3.setFocusable(false);
-        
-        jPanelTemas.add(jRadioButtonTema3, new org.netbeans.lib.awtextra.AbsoluteConstraints(295, 0, 95, 30));
-        
-        jPanelGeneral.add(jPanelTemas, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 50, 590, 30));
+        jPanelGeneral.add(jPanelTemas, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 5) / 1920, (pantalla.height * 50) / 1080, (pantalla.width * 590) / 1920, (pantalla.height * 30) / 1080));
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
-        jPanelOcultarElementos.setBackground(new java.awt.Color(255, 179, 179));
+        jPanelIdiomas.setBackground(new java.awt.Color(255, 179, 179));
+        jPanelIdiomas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        
+        l_idioma.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
+        l_idioma.setOpaque(true);
+        l_idioma.setBackground(new java.awt.Color(255, 179, 179));
+        l_idioma.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        l_idioma.setText("Idioma");
+        
+        jPanelIdiomas.add(l_idioma, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 10) / 1920, 0, (pantalla.width * 100) / 1920, (pantalla.height * 30) / 1080));
+        
+        jComboBoxIdiomas.setUI(new BasicComboBoxUI() {
+            @Override
+            protected JButton createArrowButton() {
+                JButton b = new JButton();
+                b.setBorder(BorderFactory.createEmptyBorder());
+                b.setVisible(false);
+                return b;
+            }
+        });
+        jComboBoxIdiomas.setModel(cargarComboBoxIdiomas());
+        jComboBoxIdiomas.setFont(new java.awt.Font("Segoe UI", 0, fontSize - 1));
+        jComboBoxIdiomas.setRenderer(Principal.listRenderer);
+        jComboBoxIdiomas.setFocusable(false);
+        jComboBoxIdiomas.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        
+        jPanelIdiomas.add(jComboBoxIdiomas, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 125) / 1920, 2, (pantalla.width * 150) / 1920, (pantalla.height * 26) / 1080));
+        
+        jPanelGeneral.add(jPanelIdiomas, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 5) / 1920, (pantalla.height * 80) / 1080, (pantalla.width * 590) / 1920, (pantalla.height * 30) / 1080));
+        
+        
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        jPanelOcultarElementos.setBackground(new java.awt.Color(255,219,219));
         jPanelOcultarElementos.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
-        jCheckBoxOcultarElementos.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
-        jCheckBoxOcultarElementos.setBackground(new java.awt.Color(255, 179, 179));
+        jCheckBoxOcultarElementos.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
+        jCheckBoxOcultarElementos.setBackground(new java.awt.Color(255,219,219));
         jCheckBoxOcultarElementos.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         jCheckBoxOcultarElementos.setText("Ocultar todos los elementos cuando se cronometra");
         jCheckBoxOcultarElementos.setFocusable(false);
         
-        jPanelOcultarElementos.add(jCheckBoxOcultarElementos, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 520, 30));
-        jPanelGeneral.add(jPanelOcultarElementos, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 80, 590, 30));
+        jPanelOcultarElementos.add(jCheckBoxOcultarElementos, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 10) / 1920, 0, (pantalla.width * 550) / 1920, (pantalla.height * 30) / 1080));
+        jPanelGeneral.add(jPanelOcultarElementos, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 5) / 1920, (pantalla.height * 110) / 1080, (pantalla.width * 590) / 1920, (pantalla.height * 30) / 1080));
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        jPanelOcultarPreview.setBackground(new java.awt.Color(255, 219, 219));
+        jPanelOcultarPreview.setBackground(new java.awt.Color(255, 179, 179));
         jPanelOcultarPreview.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
-        jCheckBoxOcultar_preview.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
-        jCheckBoxOcultar_preview.setBackground(new java.awt.Color(255, 219, 219));
+        jCheckBoxOcultar_preview.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
+        jCheckBoxOcultar_preview.setBackground(new java.awt.Color(255, 179, 179));
         jCheckBoxOcultar_preview.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         jCheckBoxOcultar_preview.setText("Ocultar la visualización del cubo");
         jCheckBoxOcultar_preview.setFocusable(false);
         
-        jPanelOcultarPreview.add(jCheckBoxOcultar_preview, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 335, 30));
-        jPanelGeneral.add(jPanelOcultarPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 110, 590, 30));
+        jPanelOcultarPreview.add(jCheckBoxOcultar_preview, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 10) / 1920, 0, (pantalla.width * 550) / 1920, (pantalla.height * 30) / 1080));
+        jPanelGeneral.add(jPanelOcultarPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 5) / 1920, (pantalla.height * 140) / 1080, (pantalla.width * 590) / 1920, (pantalla.height * 30) / 1080));
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        jPanelPulsacionLarga.setBackground(new java.awt.Color(255, 179, 179));
+        jPanelPulsacionLarga.setBackground(new java.awt.Color(255,219,219));
         jPanelPulsacionLarga.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
-        jCheckBoxPulsacion_larga.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
-        jCheckBoxPulsacion_larga.setBackground(new java.awt.Color(255, 179, 179));
+        jCheckBoxPulsacion_larga.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
+        jCheckBoxPulsacion_larga.setBackground(new java.awt.Color(255,219,219));
         jCheckBoxPulsacion_larga.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         jCheckBoxPulsacion_larga.setText("Pulsación larga");
         jCheckBoxPulsacion_larga.setFocusable(false);
         
-        jPanelPulsacionLarga.add(jCheckBoxPulsacion_larga, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 170, 30));
-        jPanelGeneral.add(jPanelPulsacionLarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 140, 590, 30));
+        jPanelPulsacionLarga.add(jCheckBoxPulsacion_larga, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 10) / 1920, 0, (pantalla.width * 550) / 1920, (pantalla.height * 30) / 1080));
+        jPanelGeneral.add(jPanelPulsacionLarga, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 5) / 1920, (pantalla.height * 170) / 1080, (pantalla.width * 590) / 1920, (pantalla.height * 30) / 1080));
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        jPanelCronoRaton.setBackground(new java.awt.Color(255, 219, 219));
+        jPanelCronoRaton.setBackground(new java.awt.Color(255, 179, 179));
         jPanelCronoRaton.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
-        jCheckBoxCrono_raton.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
-        jCheckBoxCrono_raton.setBackground(new java.awt.Color(255, 219, 219));
+        jCheckBoxCrono_raton.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
+        jCheckBoxCrono_raton.setBackground(new java.awt.Color(255, 179, 179));
         jCheckBoxCrono_raton.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         jCheckBoxCrono_raton.setText("Usar conómetro del ratón");
         jCheckBoxCrono_raton.setFocusable(false);
         
-        jPanelCronoRaton.add(jCheckBoxCrono_raton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 280, 30));
-        jPanelGeneral.add(jPanelCronoRaton, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 170, 590, 30));
+        jPanelCronoRaton.add(jCheckBoxCrono_raton, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 10) / 1920, 0, (pantalla.width * 550) / 1920, (pantalla.height * 30) / 1080));
+        jPanelGeneral.add(jPanelCronoRaton, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 5) / 1920, (pantalla.height * 200) / 1080, (pantalla.width * 590) / 1920, (pantalla.height * 30) / 1080));
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        jPanelTiempo_inspeccion.setBackground(new java.awt.Color(255, 179, 179));
+        jPanelTiempo_inspeccion.setBackground(new java.awt.Color(255,219,219));
         jPanelTiempo_inspeccion.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
-        jCheckBoxTiempo_inspeccion.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
-        jCheckBoxTiempo_inspeccion.setBackground(new java.awt.Color(255, 179, 179));
+        jCheckBoxTiempo_inspeccion.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
+        jCheckBoxTiempo_inspeccion.setBackground(new java.awt.Color(255,219,219));
         jCheckBoxTiempo_inspeccion.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         jCheckBoxTiempo_inspeccion.setVerticalAlignment(javax.swing.JTextField.CENTER);
         jCheckBoxTiempo_inspeccion.setText("Usar tiempo de inspección");
@@ -199,7 +229,20 @@ public class Preferencias extends JFrame {
             jCheckBoxTiempo_inspeccionItemStateChanged(evt);
         });
         
-        jTextFieldSegundos.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
+        jPanelTiempo_inspeccion.add(jCheckBoxTiempo_inspeccion, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 10) / 1920, 0, (pantalla.width * 290) / 1920, (pantalla.height * 30) / 1080));
+        jPanelGeneral.add(jPanelTiempo_inspeccion, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 5) / 1920, (pantalla.height * 230) / 1080, (pantalla.width * 590) / 1920, (pantalla.height * 30) / 1080));
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        jPanelSegundos_inspeccion.setBackground(new java.awt.Color(255, 179, 179));
+        jPanelSegundos_inspeccion.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        
+        l_segundosInspeccion.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
+        l_segundosInspeccion.setOpaque(true);
+        l_segundosInspeccion.setBackground(new java.awt.Color(255,179,179));
+        l_segundosInspeccion.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        l_segundosInspeccion.setText("Segundos de inspección");
+        
+        jTextFieldSegundos.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
         jTextFieldSegundos.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextFieldSegundos.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -208,21 +251,21 @@ public class Preferencias extends JFrame {
             }
         });
         
-        l_segundos.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        l_segundos.setFont(new java.awt.Font("Segoe UI", 0, Validations.menorSize((pantalla.width * 20) / 1920, (pantalla.height * 20) / 1080))); // NOI18N
         l_segundos.setOpaque(true);
         l_segundos.setBackground(new java.awt.Color(255,179,179));
         l_segundos.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         l_segundos.setText("(segundos)");
         
-        jPanelTiempo_inspeccion.add(l_segundos, new org.netbeans.lib.awtextra.AbsoluteConstraints(355, 2, 100, 26));
-        jPanelTiempo_inspeccion.add(jTextFieldSegundos, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 2, 50, 26));
-        jPanelTiempo_inspeccion.add(jCheckBoxTiempo_inspeccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 290, 30));
-        jPanelGeneral.add(jPanelTiempo_inspeccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 200, 590, 30));
+        jPanelSegundos_inspeccion.add(l_segundosInspeccion, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 10) / 1920, 0, (pantalla.width * 270) / 1920, (pantalla.height * 30) / 1080));
+        jPanelSegundos_inspeccion.add(jTextFieldSegundos, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 280) / 1920, (pantalla.height * 2) / 1080, (pantalla.width * 50) / 1920, (pantalla.height * 26) / 1080));
+        jPanelSegundos_inspeccion.add(l_segundos, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 335) / 1920, (pantalla.height * 2) / 1080, (pantalla.width * 100) / 1920, (pantalla.height * 26) / 1080));
+        jPanelGeneral.add(jPanelSegundos_inspeccion, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 5) / 1920, (pantalla.height * 260) / 1080, (pantalla.width * 590) / 1920, (pantalla.height * 30) / 1080));
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         jButtonAceptar.setText("Aceptar");
-        jButtonAceptar.setFont(new java.awt.Font("Segoe UI", 0, 22));
+        jButtonAceptar.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         jButtonAceptar.setFocusable(false);
         jButtonAceptar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButtonAceptar.setMnemonic('A');
@@ -231,7 +274,7 @@ public class Preferencias extends JFrame {
         });
         
         jButton1Reset.setText("Resetear");
-        jButton1Reset.setFont(new java.awt.Font("Segoe UI", 0, 22));
+        jButton1Reset.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         jButton1Reset.setFocusable(false);
         jButton1Reset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1Reset.setMnemonic('R');
@@ -240,7 +283,7 @@ public class Preferencias extends JFrame {
         });
         
         jButton1Cancelar.setText("Cancelar");
-        jButton1Cancelar.setFont(new java.awt.Font("Segoe UI", 0, 22));
+        jButton1Cancelar.setFont(new java.awt.Font("Segoe UI", 0, fontSize));
         jButton1Cancelar.setFocusable(false);
         jButton1Cancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1Cancelar.setMnemonic('C');
@@ -248,18 +291,19 @@ public class Preferencias extends JFrame {
             jButton1CancelarActionPerformed(evt);
         });
         
-        jPanelFondo.add(jButtonAceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 265, 120, 33));
-        jPanelFondo.add(jButton1Reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 265, 120, 33));
-        jPanelFondo.add(jButton1Cancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 265, 120, 33));
+        jPanelFondo.add(jButtonAceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 210) / 1920, (pantalla.height * 325) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 33) / 1080));
+        jPanelFondo.add(jButton1Reset, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 350) / 1920, (pantalla.height * 325) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 33) / 1080));
+        jPanelFondo.add(jButton1Cancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 490) / 1920, (pantalla.height * 325) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 33) / 1080));
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         jPanelFondo.setBackground(new java.awt.Color(255, 219, 219));
-        jPanelFondo.add(jPanelGeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 600, 235));
-        getContentPane().add(jPanelFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 308));
+        jPanelFondo.add(jPanelGeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 20) / 1080, (pantalla.width * 600) / 1920, (pantalla.height * 295) / 1080));
+        getContentPane().add(jPanelFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, (pantalla.width * 640) / 1920, (pantalla.height * 368) / 1080));
         init();
         
         PrincipalUtil.actualizarTema(Principal.tema, 6);
+        PrincipalUtil.cambiarIdioma(Principal.idioma, 5);
         pack();
         setLocationRelativeTo(null);
     }
@@ -285,12 +329,22 @@ public class Preferencias extends JFrame {
     }
     
     private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {
-        if (jRadioButtonTema1.isSelected()) {
+        int tema = jComboBoxTemas.getSelectedIndex();
+        if (tema == 0) {
             Principal.tema = 1;
-        }else if (jRadioButtonTema2.isSelected()) {
+        }else if (tema == 1) {
             Principal.tema = 2;
-        }else if (jRadioButtonTema3.isSelected()) {
+        }else if (tema == 2) {
             Principal.tema = 3;
+        }else if (tema == 3) {
+            Principal.tema = 4;
+        }
+        
+        int idioma = jComboBoxIdiomas.getSelectedIndex();
+        if (idioma == 0) {
+            Principal.idioma = "es";
+        }else {
+            Principal.idioma = "en";
         }
         
         Principal.ocultar_todo = jCheckBoxOcultarElementos.isSelected();
@@ -302,9 +356,11 @@ public class Preferencias extends JFrame {
         Principal.cronometro_raton = jCheckBoxCrono_raton.isSelected();
         
         if (jCheckBoxTiempo_inspeccion.isSelected()) {
+           Principal.inspeccionActivada = true;
            Principal.inspeccion = true;
            Principal.tiempo_inspeccion = Integer.parseInt(jTextFieldSegundos.getText());
         }else{
+           Principal.inspeccionActivada = false;
            Principal.inspeccion = false;
         }
         
@@ -319,7 +375,8 @@ public class Preferencias extends JFrame {
     }
     
     private void jButton1ResetActionPerformed(java.awt.event.ActionEvent evt) {
-        jRadioButtonTema1.setSelected(true);
+        jComboBoxTemas.setSelectedIndex(0);
+        jComboBoxIdiomas.setSelectedIndex(0);
         jCheckBoxOcultarElementos.setSelected(true);
         jCheckBoxOcultar_preview.setSelected(false);
         jCheckBoxPulsacion_larga.setSelected(true);
@@ -333,11 +390,19 @@ public class Preferencias extends JFrame {
     
     private void init() {
         if (Principal.tema == 1) {
-            jRadioButtonTema1.setSelected(true);
+            jComboBoxTemas.setSelectedIndex(0);
         }else if (Principal.tema == 2) {
-            jRadioButtonTema2.setSelected(true);
+            jComboBoxTemas.setSelectedIndex(1);
         }else if (Principal.tema == 3) {
-            jRadioButtonTema3.setSelected(true);
+            jComboBoxTemas.setSelectedIndex(2);
+        }else if (Principal.tema == 4) {
+            jComboBoxTemas.setSelectedIndex(3);
+        }
+        
+        if (Principal.idioma.equals("es")) {
+            jComboBoxIdiomas.setSelectedIndex(0);
+        }else {
+            jComboBoxIdiomas.setSelectedIndex(1);
         }
         
         if (Principal.ocultar_todo) {
@@ -364,7 +429,7 @@ public class Preferencias extends JFrame {
             jCheckBoxCrono_raton.setSelected(false);
         }
         
-        if (Principal.inspeccion) {
+        if (Principal.inspeccionActivada) {
             jCheckBoxTiempo_inspeccion.setSelected(true);
             jTextFieldSegundos.setEnabled(true);
             l_segundos.setVisible(true);
@@ -377,15 +442,31 @@ public class Preferencias extends JFrame {
         jTextFieldSegundos.setText(Principal.tiempo_inspeccion + "");
     }
     
+    private ComboBoxModel cargarComboBoxTemas() {
+        String temas[] = new String[5];
+        temas[0] = "Principal";
+        temas[1] = "Claro";
+        temas[2] = "Oscuro";
+        temas[3] = "Fantasy";
+        ComboBoxModel model = new javax.swing.DefaultComboBoxModel(temas);
+        return model;
+    }
+    
+    private ComboBoxModel cargarComboBoxIdiomas() {
+        String idiomas[] = new String[4];
+        idiomas[0] = "Español";
+        idiomas[1] = "Inglés";
+        ComboBoxModel model = new javax.swing.DefaultComboBoxModel(idiomas);
+        return model;
+    }
+    
     public static javax.swing.JPanel jPanelFondo;
     public static javax.swing.JPanel jPanelGeneral;
     public static javax.swing.JLabel l_temas;
     public static javax.swing.JLabel l_titulo;
     public static javax.swing.JLabel l_segundos;
-    public static javax.swing.ButtonGroup buttonGroup1;
-    public static javax.swing.JRadioButton jRadioButtonTema1;
-    public static javax.swing.JRadioButton jRadioButtonTema2;
-    public static javax.swing.JRadioButton jRadioButtonTema3;
+    public static javax.swing.JLabel l_idioma;
+    public static javax.swing.JLabel l_segundosInspeccion;
     public static javax.swing.JCheckBox jCheckBoxOcultarElementos;
     public static javax.swing.JCheckBox jCheckBoxOcultar_preview;
     public static javax.swing.JCheckBox jCheckBoxPulsacion_larga;
@@ -393,13 +474,18 @@ public class Preferencias extends JFrame {
     public static javax.swing.JCheckBox jCheckBoxTiempo_inspeccion;
     public static javax.swing.JPanel jPanelTitulo;
     public static javax.swing.JPanel jPanelTemas;
+    public static javax.swing.JPanel jPanelIdiomas;
     public static javax.swing.JPanel jPanelOcultarElementos;
     public static javax.swing.JPanel jPanelOcultarPreview;
     public static javax.swing.JPanel jPanelPulsacionLarga;
     public static javax.swing.JPanel jPanelCronoRaton;
     public static javax.swing.JPanel jPanelTiempo_inspeccion;
+    public static javax.swing.JPanel jPanelSegundos_inspeccion;
     public static javax.swing.JButton jButtonAceptar;
     public static javax.swing.JButton jButton1Reset;
     public static javax.swing.JButton jButton1Cancelar;
     public static javax.swing.JTextField jTextFieldSegundos;
+    public static javax.swing.JComboBox jComboBoxTemas;
+    public static javax.swing.JComboBox jComboBoxIdiomas;
+
 }

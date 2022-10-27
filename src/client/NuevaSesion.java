@@ -6,18 +6,26 @@
 package client;
 
 import controller.SesionDao;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.text.ParseException;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import utilities.PrincipalUtil;
+import utilities.Validations;
 
 /**
  *
  * @author Dani
  */
 public class NuevaSesion extends JFrame{
+    public static Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
     
+    public static String duplicateError = "";
+    public static String nameError = "";
+    public static String nameMissingError = "";
     
     NuevaSesion(){
         this.setUndecorated(true);
@@ -25,7 +33,7 @@ public class NuevaSesion extends JFrame{
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        l_nombre = new javax.swing.JLabel();
         t_nombre = new javax.swing.JTextField();
         jButtonCancelar = new javax.swing.JButton();
         jButtonAceptar = new javax.swing.JButton();
@@ -33,25 +41,28 @@ public class NuevaSesion extends JFrame{
         setTitle("Nueva sesión");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        int fontSize = Validations.menorSize((pantalla.width * 20) / 1920, (pantalla.height * 20) / 1080);
+        
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        jLabel1.setText("Nombre de la Sesión: ");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, 30));
+        l_nombre.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
+        l_nombre.setText("Nombre de la Sesión");
+        l_nombre.setHorizontalAlignment(javax.swing.JLabel.RIGHT);
+        jPanel1.add(l_nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 30) / 1080, (pantalla.width * 200) / 1920, (pantalla.height * 30) / 1080));
 
-        t_nombre.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        t_nombre.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
         t_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                t_nombreKeyPressed(evt);
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                t_nombreKeyReleased(evt);
             }
             @Override
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 t_nombreKeyTyped(evt);
             }
         });
-        jPanel1.add(t_nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 30, 230, 30));
+        jPanel1.add(t_nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 225) / 1920, (pantalla.height * 30) / 1080, (pantalla.width * 215) / 1920, (pantalla.height * 30) / 1080));
 
         jButtonCancelar.setText("Cancelar");
         jButtonCancelar.setFocusable(false);
@@ -60,7 +71,7 @@ public class NuevaSesion extends JFrame{
         jButtonCancelar.addActionListener((java.awt.event.ActionEvent evt) -> {
             jButtonCancelarActionPerformed(evt);
         });
-        jPanel1.add(jButtonCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 90, 110, 30));
+        jPanel1.add(jButtonCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 310) / 1920, (pantalla.height * 90) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 30) / 1080));
 
         jButtonAceptar.setText("Aceptar");
         jButtonAceptar.setFocusable(false);
@@ -69,22 +80,23 @@ public class NuevaSesion extends JFrame{
         jButtonAceptar.addActionListener((java.awt.event.ActionEvent evt) -> {
             jButtonAceptarActionPerformed(evt);
         });
-        jPanel1.add(jButtonAceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 90, 110, 30));
+        jPanel1.add(jButtonAceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 170) / 1920, (pantalla.height * 90) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 30) / 1080));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 460, 140));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, (pantalla.width * 460) / 1920, (pantalla.height * 140) / 1080));
 
         PrincipalUtil.actualizarTema(Principal.tema, 4);
+        PrincipalUtil.cambiarIdioma(Principal.idioma, 3);
         pack();
         setLocationRelativeTo(null);
     }
-     private void t_nombreKeyPressed(java.awt.event.KeyEvent evt){
+     private void t_nombreKeyReleased(java.awt.event.KeyEvent evt){
         // TODO add your handling code here:
         if (evt.getKeyCode() == 10) {
             if (isValidName(t_nombre.getText())) {
                 String fnombre = Principal.ficheroSesion.getName();
                 Principal.ficheroSesion = new File("sesiones/" + t_nombre.getText());
                 if (Principal.ficheroSesion.exists()) {
-                    JOptionPane.showMessageDialog(this, "Ya existe una sesión con ese nombre", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    PrincipalUtil.Error(duplicateError);
                     t_nombre.setText("");
                     Principal.ficheroSesion = new File("sesion/" + fnombre);
                 }else{
@@ -104,9 +116,9 @@ public class NuevaSesion extends JFrame{
                 }
             }else{
                 if (t_nombre.getText().equals("")) {
-                    JOptionPane.showMessageDialog(this, "Introduce un nombre para la nueva sesión", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    PrincipalUtil.Error(nameMissingError);
                 }else{
-                    JOptionPane.showMessageDialog(this, "'" + t_nombre.getText() + "' no es un nombre válido para una sesión", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    PrincipalUtil.Error("'" + t_nombre.getText() + "' " + nameError);
                 }
             }
         }
@@ -122,7 +134,7 @@ public class NuevaSesion extends JFrame{
             String fnombre = Principal.ficheroSesion.getName();
             Principal.ficheroSesion = new File("sesiones/" + t_nombre.getText());
             if (Principal.ficheroSesion.exists()) {
-                JOptionPane.showMessageDialog(this, "Ya existe una sesión con ese nombre", "ERROR", JOptionPane.ERROR_MESSAGE);
+                PrincipalUtil.Error(duplicateError);
                 t_nombre.setText("");
                 Principal.ficheroSesion = new File("sesiones/" + fnombre);
             }else{
@@ -136,16 +148,16 @@ public class NuevaSesion extends JFrame{
                     
                     Principal.t_tiempo.setText("00:00:00");
 
-                } catch (Exception e) {
+                } catch (IOException | ParseException e) {
                     e.printStackTrace();
                 }
                 this.dispose();
             }
         }else{
             if (t_nombre.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Introduce un nombre para la nueva sesión", "ERROR", JOptionPane.ERROR_MESSAGE);
+                PrincipalUtil.Error(nameMissingError);
             }else{
-                JOptionPane.showMessageDialog(this, "'" + t_nombre.getText() + "' no es un nombre válido para una sesión", "ERROR", JOptionPane.ERROR_MESSAGE);
+                PrincipalUtil.Error("'" + t_nombre.getText() + "' "  + nameError);
             }
         }
     }
@@ -167,9 +179,9 @@ public class NuevaSesion extends JFrame{
         this.dispose();
     }
     
-    public static javax.swing.JLabel jLabel1;
+    public static javax.swing.JLabel l_nombre;
     public static javax.swing.JPanel jPanel1;
     public javax.swing.JTextField t_nombre;
-    public javax.swing.JButton jButtonAceptar;
-    public javax.swing.JButton jButtonCancelar;
+    public static javax.swing.JButton jButtonAceptar;
+    public static javax.swing.JButton jButtonCancelar;
 }

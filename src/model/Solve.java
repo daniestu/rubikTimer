@@ -16,6 +16,8 @@ public class Solve implements Comparable<Solve>{
     private String scramble;
     private Date fecha;
     private String tiempo;
+    private boolean sum2;
+    private boolean dnf;
 
     public Integer getNum() {
         return num;
@@ -48,12 +50,30 @@ public class Solve implements Comparable<Solve>{
     public void setTiempo(String tiempo) {
         this.tiempo = tiempo;
     }
+    
+    public boolean getSum2() {
+        return sum2;
+    }
 
-    public Solve(Integer num, String scramble, Date fecha, String tiempo) {
+    public void setSum2(boolean sum2) {
+        this.sum2 = sum2;
+    }
+    
+    public boolean getDnf() {
+        return dnf;
+    }
+
+    public void setDnf(boolean dnf) {
+        this.dnf = dnf;
+    }
+
+    public Solve(Integer num, String scramble, Date fecha, String tiempo, boolean sum2, boolean dnf) {
         this.num = num;
         this.scramble = scramble;
         this.fecha = fecha;
         this.tiempo = tiempo;
+        this.sum2 = sum2;
+        this.dnf = dnf;
     }
 
     @Override

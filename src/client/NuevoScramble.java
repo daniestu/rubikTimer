@@ -5,10 +5,13 @@
  */
 package client;
 
-import java.util.Arrays;
+import controller.CuboDao;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import model.Cubo;
 import utilities.PrincipalUtil;
+import utilities.Validations;
 
 /**
  *
@@ -16,14 +19,18 @@ import utilities.PrincipalUtil;
  */
 public class NuevoScramble extends JFrame{
     
+    public static String scrambleError="";
     
     NuevoScramble(){
+        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+        int fontSize = Validations.menorSize((pantalla.width * 20) / 1920, (pantalla.height * 20) / 1080);
+        
         this.setUndecorated(true);
         this.setVisible(true);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         
         panelGeneral = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        l_scramble = new javax.swing.JLabel();
         t_scramble = new javax.swing.JTextField();
         jButtonCancelar = new javax.swing.JButton();
         jButtonAceptar = new javax.swing.JButton();
@@ -34,18 +41,18 @@ public class NuevoScramble extends JFrame{
         panelGeneral.setBackground(new java.awt.Color(255, 255, 255));
         panelGeneral.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        jLabel1.setText("Scramble:");
-        panelGeneral.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, 30));
+        l_scramble.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
+        l_scramble.setText("Scramble:");
+        panelGeneral.add(l_scramble, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 30) / 1920, (pantalla.height * 30) / 1080, (pantalla.width * 550) / 1920, (pantalla.height * 30) / 1080));
 
-        t_scramble.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        t_scramble.setFont(new java.awt.Font("Segoe UI", 0, fontSize)); // NOI18N
         t_scramble.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 t_scrambleKeyPressed(evt);
             }
         });
-        panelGeneral.add(t_scramble, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 65, 550, 30));
+        panelGeneral.add(t_scramble, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 30) / 1920, (pantalla.height * 65) / 1080, (pantalla.width * 550) / 1920, (pantalla.height * 30) / 1080));
 
         jButtonCancelar.setText("Cancelar");
         jButtonCancelar.setFocusable(false);
@@ -54,7 +61,7 @@ public class NuevoScramble extends JFrame{
         jButtonCancelar.addActionListener((java.awt.event.ActionEvent evt) -> {
             jButtonCancelarActionPerformed(evt);
         });
-        panelGeneral.add(jButtonCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 120, 120, 33));
+        panelGeneral.add(jButtonCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 450) / 1920, (pantalla.height * 120) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 33) / 1080));
 
         jButtonAceptar.setText("Aceptar");
         jButtonAceptar.setFocusable(false);
@@ -63,43 +70,40 @@ public class NuevoScramble extends JFrame{
         jButtonAceptar.addActionListener((java.awt.event.ActionEvent evt) -> {
             jButtonAceptarActionPerformed(evt);
         });
-        panelGeneral.add(jButtonAceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 120, 120, 33));
+        panelGeneral.add(jButtonAceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 310) / 1920, (pantalla.height * 120) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 33) / 1080));
 
-        getContentPane().add(panelGeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 610, 180));
+        getContentPane().add(panelGeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, (pantalla.width * 610) / 1920, (pantalla.height * 180) / 1080));
 
         PrincipalUtil.actualizarTema(Principal.tema, 8);
+        PrincipalUtil.cambiarIdioma(Principal.idioma, 6);
         pack();
         setLocationRelativeTo(null);
     }
-    private boolean comprobarScramble() {
-        String moves[] = {"R","R'","R2","L","L'","L2","U","U'","U2","D","D'","D2","F","F'","F2","B","B'","B2"};
-        String scramble[] = t_scramble.getText().split(" ");
-        
-        for (String scramble1 : scramble) {
-            if (!Arrays.asList(moves).contains(scramble1.toUpperCase())) {
-                return false;
-            }
-        }
-        return true;
+    
+    private void submit(String scramble) {
+        Principal.l_scramble.setText(scramble);
+        Principal.scrambles.add(scramble);
+        Cubo c = CuboDao.generarCubo(scramble);
+        CuboDao.establecerCubo(c, 0);
     }
     
     private void t_scrambleKeyPressed(java.awt.event.KeyEvent evt){
         if (evt.getKeyCode() == 10) {
-            if (comprobarScramble()) {
-                Principal.l_scramble.setText(t_scramble.getText().toUpperCase());
+            if (Validations.comprobarScramble(t_scramble.getText())) {
+                submit(t_scramble.getText().toUpperCase());
                 this.dispose();
             } else{
-                JOptionPane.showMessageDialog(this, "Introduce un scramble válido. (Ejemplo: F' R' D B' F2 L F D' R F' L2 F2 B D2 L' R' B2 L2 B' U')", "ERROR", JOptionPane.ERROR_MESSAGE);
+                PrincipalUtil.Error(scrambleError);
             }
         }
     }
     
     private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {
-        if (comprobarScramble()) {
-            Principal.l_scramble.setText(t_scramble.getText().toUpperCase());
+        if (Validations.comprobarScramble(t_scramble.getText())) {
+            submit(t_scramble.getText().toUpperCase());
             this.dispose();
         } else{
-            JOptionPane.showMessageDialog(this, "Introduce un scramble válido. (Ejemplo: F' R' D B' F2 L F D' R F' L2 F2 B D2 L' R' B2 L2 B' U')", "ERROR", JOptionPane.ERROR_MESSAGE);
+            PrincipalUtil.Error(scrambleError);
         }
     }
 
@@ -107,9 +111,9 @@ public class NuevoScramble extends JFrame{
         this.dispose();
     }
     
-    public static javax.swing.JLabel jLabel1;
+    public static javax.swing.JLabel l_scramble;
     public static javax.swing.JPanel panelGeneral;
     public javax.swing.JTextField t_scramble;
-    public javax.swing.JButton jButtonAceptar;
-    public javax.swing.JButton jButtonCancelar;
+    public static javax.swing.JButton jButtonAceptar;
+    public static javax.swing.JButton jButtonCancelar;
 }

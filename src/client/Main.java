@@ -5,6 +5,8 @@
  */
 package client;
 
+import java.util.Locale;
+
 /**
  *
  * @author Dani
@@ -16,6 +18,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Locale.setDefault(Locale.ENGLISH);
         Principal principal = new Principal();
     }
     

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class AVG {
     private String tiempo;
     private ArrayList<Solve> solves;
+    private Boolean dnf;
 
     public String getTiempo() {
         return tiempo;
@@ -30,10 +31,19 @@ public class AVG {
     public void setSolves(ArrayList<Solve> solves) {
         this.solves = solves;
     }
+    
+    public Boolean getDnf() {
+        return dnf;
+    }
 
-    public AVG(String tiempo, ArrayList<Solve> solves) {
+    public void setDnf(Boolean dnf) {
+        this.dnf = dnf;
+    }
+
+    public AVG(String tiempo, ArrayList<Solve> solves, Boolean dnf) {
         this.tiempo = tiempo;
         this.solves = solves;
+        this.dnf = dnf;
     }
     
 }

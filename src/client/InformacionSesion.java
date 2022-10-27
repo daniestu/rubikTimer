@@ -1,7 +1,10 @@
 package client;
 
 import controller.SesionDao;
+import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
@@ -12,13 +15,21 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import model.Sesion;
 import utilities.PrincipalUtil;
+import utilities.Validations;
 
 /**
  *
  * @author Dani
  */
+
 public class InformacionSesion extends JFrame{
     private final Sesion sesion;
+    
+    public static String deleteError= "";
+    public static String renameError= "";
+    public static String nameMissingError= "";
+    public static String nameError= "";
+    public static String deleteConfirmation= "";
     
     public InformacionSesion(Sesion sesion) {
         this.sesion = sesion;
@@ -27,6 +38,15 @@ public class InformacionSesion extends JFrame{
         this.setVisible(true);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         
+        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+        
+        int fontSize = Validations.menorSize((pantalla.width * 22) / 1920, (pantalla.height * 22) / 1080);
+        int iconSize = Validations.menorSize((pantalla.height * 90) / 1080, (pantalla.width * 90) / 1920);
+        
+        
+        ImageIcon iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo90x90.png"));
+        Image newimg = iconLogo.getImage().getScaledInstance(iconSize, iconSize,  java.awt.Image.SCALE_SMOOTH);
+        iconLogo = new ImageIcon(newimg);
         
         jPanel1 = new javax.swing.JPanel();
         l_total = new javax.swing.JLabel();
@@ -60,31 +80,30 @@ public class InformacionSesion extends JFrame{
         setTitle("Información de la sesión");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
-        ImageIcon iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo90x90.png"));
-        l_img.setIcon(iconLogo);
-
         jPanel1.setPreferredSize(new java.awt.Dimension(500, 400));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        l_total.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_total.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_total.setText("Total:");
-        l_total.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_total, new org.netbeans.lib.awtextra.AbsoluteConstraints(50,160, 140, -1));
+        jPanel1.add(l_total, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920,(pantalla.height * 160) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
 
         t_total.setEditable(false);
         t_total.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_total.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_total.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_total.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(t_total, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 160, 130, -1));
-        jPanel1.add(l_img, new org.netbeans.lib.awtextra.AbsoluteConstraints(145, 10, 90, 90));
+        t_total.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
+        jPanel1.add(t_total, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 160) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
+        
+        l_img.setIcon(iconLogo);
+        
+        jPanel1.add(l_img, new org.netbeans.lib.awtextra.AbsoluteConstraints(((((pantalla.width * 380) / 1920)) - iconSize) / 2, (pantalla.height * 10) / 1080, iconSize, iconSize));
+        
+        jPanel1.add(l_img, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 145) / 1920, (pantalla.height * 10) / 1080, iconSize, iconSize));
 
         t_nombre.setEditable(false);
         t_nombre.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_nombre.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_nombre.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_nombre.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_nombre.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         t_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -101,19 +120,17 @@ public class InformacionSesion extends JFrame{
                 t_nombreMouseClicked(evt);
             }
         });
-        jPanel1.add(t_nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 120, 130, -1));
+        jPanel1.add(t_nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 120) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
 
-        l_nombre.setFont(new java.awt.Font("Times new Roman", 1, 22));
+        l_nombre.setFont(new java.awt.Font("Times new Roman", 1, fontSize));
         l_nombre.setHorizontalAlignment(javax.swing.JTextField.RIGHT);// NOI18N
         l_nombre.setText("Nombre:");
-        l_nombre.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 120, 140, -1));
+        jPanel1.add(l_nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 120) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
 
         t_avg.setEditable(false);
         t_avg.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_avg.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_avg.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_avg.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_avg.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         t_avg.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -122,32 +139,28 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_avg, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 280, 130, -1));
+        jPanel1.add(t_avg, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 280) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
 
-        l_avg.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_avg.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_avg.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_avg.setText("Media:");
-        l_avg.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_avg, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 140, -1));
+        jPanel1.add(l_avg, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 280) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
 
         t_desv.setEditable(false);
         t_desv.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_desv.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_desv.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_desv.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(t_desv, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 320, 130, -1));
+        t_desv.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
+        jPanel1.add(t_desv, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 320) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
 
-        l_desv.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_desv.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_desv.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_desv.setText("Desviación:");
-        l_desv.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_desv, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 320, 140, -1));
+        jPanel1.add(l_desv, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 320) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
         
         t_peor.setEditable(false);
         t_peor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_peor.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_peor.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_peor.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_peor.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         t_peor.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -157,20 +170,18 @@ public class InformacionSesion extends JFrame{
                 
             }
         });
-        jPanel1.add(t_peor, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 240, 130, -1));
+        jPanel1.add(t_peor, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 240) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
 
-        l_peor.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_peor.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_peor.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_peor.setText("Peor:");
-        l_peor.setPreferredSize(new java.awt.Dimension(60, 25));
         
-        jPanel1.add(l_peor, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 240, 140, -1));
+        jPanel1.add(l_peor, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 240) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
 
         t_mejor.setEditable(false);
         t_mejor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_mejor.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_mejor.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_mejor.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_mejor.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         t_mejor.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -181,26 +192,23 @@ public class InformacionSesion extends JFrame{
             }
         });
         
-        jPanel1.add(t_mejor, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 200, 130, -1));
+        jPanel1.add(t_mejor, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 200) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
         
 
-        l_mejor.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_mejor.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_mejor.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_mejor.setText("Mejor:");
-        l_mejor.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_mejor, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 200, 140, -1));
+        jPanel1.add(l_mejor, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 200) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
 
-        l_cao5.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_cao5.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_cao5.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_cao5.setText("Ao5 Actual:");
-        l_cao5.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_cao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 360, 140, -1));
+        jPanel1.add(l_cao5, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 360) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
         
         t_cao5.setEditable(false);
         t_cao5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_cao5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_cao5.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_cao5.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_cao5.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         t_cao5.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -209,19 +217,17 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_cao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 360, 130, -1));
+        jPanel1.add(t_cao5, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 360) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
         
-        l_cao12.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_cao12.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_cao12.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_cao12.setText("Ao12 Actual:");
-        l_cao12.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_cao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 400, 140, -1));
+        jPanel1.add(l_cao12, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 400) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
         
         t_cao12.setEditable(false);
         t_cao12.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_cao12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_cao12.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_cao12.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_cao12.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         t_cao12.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -230,19 +236,17 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_cao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 400, 130, -1));
+        jPanel1.add(t_cao12, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 400) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
         
-        l_cao100.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_cao100.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_cao100.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_cao100.setText("Ao100 Actual:");
-        l_cao100.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_cao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 440, 140, -1));
+        jPanel1.add(l_cao100, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 440) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
         
         t_cao100.setEditable(false);
         t_cao100.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_cao100.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_cao100.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_cao100.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_cao100.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         t_cao100.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -251,19 +255,17 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_cao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 440, 130, -1));
+        jPanel1.add(t_cao100, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 440) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
         
-        l_bao5.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_bao5.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_bao5.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_bao5.setText("Mejor Ao5:");
-        l_bao5.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_bao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 480, 140, -1));
+        jPanel1.add(l_bao5, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 480) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
         
         t_bao5.setEditable(false);
         t_bao5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_bao5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_bao5.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_bao5.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_bao5.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         t_bao5.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -272,19 +274,17 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_bao5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 480, 130, -1));
+        jPanel1.add(t_bao5, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 480) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
         
-        l_bao12.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_bao12.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_bao12.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_bao12.setText("Mejor Ao12:");
-        l_bao12.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_bao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 520, 140, -1));
+        jPanel1.add(l_bao12, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 520) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
         
         t_bao12.setEditable(false);
         t_bao12.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_bao12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_bao12.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_bao12.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_bao12.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         t_bao12.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -293,19 +293,17 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_bao12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 520, 130, -1));
+        jPanel1.add(t_bao12, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 520) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
         
-        l_bao100.setFont(new java.awt.Font("Times new Roman", 1, 22)); // NOI18N
+        l_bao100.setFont(new java.awt.Font("Times new Roman", 1, fontSize)); // NOI18N
         l_bao100.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         l_bao100.setText("Mejor Ao100:");
-        l_bao100.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPanel1.add(l_bao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 560, 140, -1));
+        jPanel1.add(l_bao100, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 20) / 1920, (pantalla.height * 560) / 1080, (pantalla.width * 170) / 1920, (pantalla.height * 25) / 1080));
         
         t_bao100.setEditable(false);
         t_bao100.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         t_bao100.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_bao100.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
-        t_bao100.setPreferredSize(new java.awt.Dimension(60, 25));
+        t_bao100.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         t_bao100.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -314,16 +312,11 @@ public class InformacionSesion extends JFrame{
                 }
             }
         });
-        jPanel1.add(t_bao100, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 560, 130, -1));
+        jPanel1.add(t_bao100, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 560) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 25) / 1080));
         
-        
-        
-        b_eliminar.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
+        b_eliminar.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         b_eliminar.setText("Eliminar");
         b_eliminar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        b_eliminar.setMaximumSize(new java.awt.Dimension(80, 23));
-        b_eliminar.setMinimumSize(new java.awt.Dimension(80, 23));
-        b_eliminar.setPreferredSize(new java.awt.Dimension(80, 20));
         b_eliminar.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         b_eliminar.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
         b_eliminar.setFocusable(false);
@@ -332,14 +325,11 @@ public class InformacionSesion extends JFrame{
         b_eliminar.addActionListener((java.awt.event.ActionEvent evt) -> {
             jButton2ActionPerformed(evt);
         });
-        jPanel1.add(b_eliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 610, 130, 40));
+        jPanel1.add(b_eliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 200) / 1920, (pantalla.height * 610) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 40) / 1080));
 
-        b_aceptar.setFont(new java.awt.Font("Times new Roman", 0, 22)); // NOI18N
+        b_aceptar.setFont(new java.awt.Font("Times new Roman", 0, fontSize)); // NOI18N
         b_aceptar.setText("Aceptar");
         b_aceptar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        b_aceptar.setMaximumSize(new java.awt.Dimension(80, 23));
-        b_aceptar.setMinimumSize(new java.awt.Dimension(80, 23));
-        b_aceptar.setPreferredSize(new java.awt.Dimension(80, 20));
         b_aceptar.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         b_aceptar.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
         b_aceptar.setFocusable(false);
@@ -348,26 +338,72 @@ public class InformacionSesion extends JFrame{
         b_aceptar.addActionListener((java.awt.event.ActionEvent evt) -> {
             jButton3ActionPerformed(evt);
         });
-        jPanel1.add(b_aceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 610, 130, 40));
+        jPanel1.add(b_aceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints((pantalla.width * 50) / 1920, (pantalla.height * 610) / 1080, (pantalla.width * 130) / 1920, (pantalla.height * 40) / 1080));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 380, 680));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, (pantalla.width * 380) / 1920, (pantalla.height * 680) / 1080));
         
-        t_nombre.setText(sesion.getNombre());
-        t_total.setText(sesion.getTotalSolves()+"");
-        t_mejor.setText(sesion.getMejor().getTiempo());
-        t_peor.setText(sesion.getPeor().getTiempo());
-        t_avg.setText(sesion.getAvg().getTiempo());
-        t_desv.setText(sesion.getDesviacion() + "");
-        t_bao5.setText(sesion.getBestAo5().getTiempo());
-        t_bao12.setText(sesion.getBestAo12().getTiempo());
-        t_bao100.setText(sesion.getBestAo100().getTiempo());
-        t_cao5.setText(sesion.getCurrentAo5().getTiempo());
-        t_cao12.setText(sesion.getCurrentAo12().getTiempo());
-        t_cao100.setText(sesion.getCurrentAo100().getTiempo());
+        init();
         
         PrincipalUtil.actualizarTema(Principal.tema, 2);
+        PrincipalUtil.cambiarIdioma(Principal.idioma, 1);
         pack();
         setLocationRelativeTo(null);
+    }
+    
+    private void init() {
+        t_nombre.setText(sesion.getNombre());
+        t_total.setText(sesion.getTotalSolves()+"");
+        
+        if (sesion.getMejor().getDnf()) {
+            t_mejor.setText("DNF");
+        }else{
+            t_mejor.setText(sesion.getMejor().getTiempo());
+        }
+        
+        if (sesion.getPeor().getDnf()) {
+            t_peor.setText("DNF");
+        }else{
+            t_peor.setText(sesion.getPeor().getTiempo());
+        }
+        
+        t_avg.setText(sesion.getAvg().getTiempo());
+        t_desv.setText(sesion.getDesviacion() + "");
+        
+        if (sesion.getBestAo5().getDnf()) {
+            t_bao5.setText("DNF");
+        }else{
+            t_bao5.setText(sesion.getBestAo5().getTiempo());
+        }
+        
+        if (sesion.getBestAo12().getDnf()) {
+            t_bao12.setText("DNF");
+        }else{
+            t_bao12.setText(sesion.getBestAo12().getTiempo());
+        }
+        
+        if (sesion.getBestAo100().getDnf()) {
+            t_bao100.setText("DNF");
+        }else{
+            t_bao100.setText(sesion.getBestAo100().getTiempo());
+        }
+        
+        if (sesion.getCurrentAo5().getDnf()) {
+            t_cao5.setText("DNF");
+        }else{
+            t_cao5.setText(sesion.getCurrentAo5().getTiempo());
+        }
+        
+        if (sesion.getCurrentAo12().getDnf()) {
+            t_cao12.setText("DNF");
+        }else{
+            t_cao12.setText(sesion.getCurrentAo12().getTiempo());
+        }
+        
+        if (sesion.getCurrentAo100().getDnf()) {
+            t_cao100.setText("DNF");
+        }else{
+            t_cao100.setText(sesion.getCurrentAo100().getTiempo());
+        }
     }
     
     private void t_mejorMouseClicked(java.awt.event.MouseEvent evt) {
@@ -461,38 +497,41 @@ public class InformacionSesion extends JFrame{
     }
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt){
-        if (!Principal.ficheroSesion.delete()) {
-            JOptionPane.showMessageDialog(this, "No se ha podido eliminar la sesión", "ERROR", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        File f = new File("sesiones");
-        if (!f.exists()) {
-            f.mkdir();
-        }
-        File[] files = f.listFiles();
-        if (files.length == 0) {
-            File sesion = new File("sesiones/Default");
-            FileWriter fw;
+        int respuesta = JOptionPane.showConfirmDialog(this, deleteConfirmation, "Mensaje de confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (respuesta == 0) {
+            if (!Principal.ficheroSesion.delete()) {
+                PrincipalUtil.Error(deleteError);
+                return;
+            }
+            File f = new File("sesiones");
+            if (!f.exists()) {
+                f.mkdir();
+            }
+            File[] files = f.listFiles();
+            if (files.length == 0) {
+                File sesion = new File("sesiones/Default");
+                FileWriter fw;
+                try {
+                    fw = new FileWriter(sesion);
+                    fw.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                Principal.ficheroSesion = sesion;
+            }else{
+                Principal.ficheroSesion = files[0];
+            }
             try {
-                fw = new FileWriter(sesion);
-                fw.close();
-            } catch (IOException ex) {
+                SesionDao.cargarSesion();
+                Principal.jComboBox1.setModel(PrincipalUtil.cargarModeloComboBox());
+                Principal.jComboBox1.setSelectedItem(Principal.ficheroSesion.getName());
+
+                Principal.t_tiempo.setText("00:00:00");
+            } catch (IOException | ParseException ex) {
                 ex.printStackTrace();
             }
-            Principal.ficheroSesion = sesion;
-        }else{
-            Principal.ficheroSesion = files[0];
+            this.dispose();
         }
-        try {
-            SesionDao.cargarSesion();
-            Principal.jComboBox1.setModel(PrincipalUtil.cargarModeloComboBox());
-            Principal.jComboBox1.setSelectedItem(Principal.ficheroSesion.getName());
-            
-            Principal.t_tiempo.setText("00:00:00");
-        } catch (IOException | ParseException ex) {
-            ex.printStackTrace();
-        }
-        this.dispose();
     }                                        
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -500,7 +539,7 @@ public class InformacionSesion extends JFrame{
             File fnew = new File("sesiones/"+t_nombre.getText());
 
             if (!Principal.ficheroSesion.renameTo(fnew)) {
-                JOptionPane.showMessageDialog(this, "Ha ocurrido un error al renombrar la sesion", "ERROR", JOptionPane.ERROR_MESSAGE);
+                PrincipalUtil.Error(renameError);
             }else{
                 Principal.ficheroSesion = new File("sesiones/"+t_nombre.getText());
                 try {
@@ -516,9 +555,9 @@ public class InformacionSesion extends JFrame{
             this.dispose();
         }else{
             if (t_nombre.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Introduce un nombre para la sesión", "ERROR", JOptionPane.ERROR_MESSAGE);
+                PrincipalUtil.Error(nameMissingError);
             }else{
-                JOptionPane.showMessageDialog(this, "'" + t_nombre.getText() + "' no es un nombre válido para una sesión", "ERROR", JOptionPane.ERROR_MESSAGE);
+                PrincipalUtil.Error("'" + t_nombre.getText() + "' " + nameError);
             }
         }
     }
@@ -535,7 +574,7 @@ public class InformacionSesion extends JFrame{
                 File fnew = new File("sesiones/"+t_nombre.getText());
                 
                 if (!Principal.ficheroSesion.renameTo(fnew)) {
-                    JOptionPane.showMessageDialog(this, "Ha ocurrido un error al renombrar la sesion", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    PrincipalUtil.Error(renameError);
                 }else{
                     Principal.ficheroSesion = new File("sesiones/"+t_nombre.getText());
                     try {
@@ -549,9 +588,9 @@ public class InformacionSesion extends JFrame{
                 this.dispose();
             }else{
                 if (t_nombre.getText().equals("")) {
-                    JOptionPane.showMessageDialog(this, "Introduce un nombre para la sesión", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    PrincipalUtil.Error(nameMissingError);
                 }else{
-                    JOptionPane.showMessageDialog(this, "'" + t_nombre.getText() + "' no es un nombre válido para una sesión", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    PrincipalUtil.Error("'" + t_nombre.getText() + "' " + nameError);
                 }
             }
         }
@@ -577,8 +616,8 @@ public class InformacionSesion extends JFrame{
         return false;
     }
             
-    public javax.swing.JButton b_eliminar;
-    public javax.swing.JButton b_aceptar;
+    public static javax.swing.JButton b_eliminar;
+    public static javax.swing.JButton b_aceptar;
     public static javax.swing.JPanel jPanel1;
     public static javax.swing.JLabel l_mejor;
     public static javax.swing.JLabel l_peor;

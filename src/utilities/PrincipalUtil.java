@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package utilities;
 
+import language.Idioma;
+import client.Exportar;
 import client.InformacionAVG;
 import client.InformacionSesion;
 import client.InformacionSolve;
@@ -14,8 +11,8 @@ import client.NuevoSolve;
 import client.Preferencias;
 import client.Principal;
 import client.ScramblePreview;
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
@@ -23,11 +20,9 @@ import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
-import model.AVG;
-import model.Solve;
 
 /**
  *
@@ -35,36 +30,6 @@ import model.Solve;
  */
 public class PrincipalUtil {
     
-    public static boolean esMejorTiempo(String mejor, String tiempo) {
-        String partsMejor[] = mejor.split(":");
-        String partsTiempo[] = tiempo.split(":");
-
-        if (Integer.parseInt(partsMejor[0]) == Integer.parseInt(partsTiempo[0])) {
-            if (Integer.parseInt(partsMejor[1]) == Integer.parseInt(partsTiempo[1])) {
-                return Integer.parseInt(partsMejor[2]) >= Integer.parseInt(partsTiempo[2]);
-            } else {
-                return Integer.parseInt(partsMejor[1]) >= Integer.parseInt(partsTiempo[1]);
-            }
-        } else {
-            return Integer.parseInt(partsMejor[0]) >= Integer.parseInt(partsTiempo[0]);
-        }
-    }
-
-    public static boolean esPeorTiempo(String peor, String tiempo) {
-        String[] partsPeor = peor.split(":");
-        String partsTiempo[] = tiempo.split(":");
-
-        if (Integer.parseInt(partsPeor[0]) == Integer.parseInt(partsTiempo[0])) {
-            if (Integer.parseInt(partsPeor[1]) == Integer.parseInt(partsTiempo[1])) {
-                return Integer.parseInt(partsPeor[2]) < Integer.parseInt(partsTiempo[2]);
-            } else {
-                return Integer.parseInt(partsPeor[1]) < Integer.parseInt(partsTiempo[1]);
-            }
-        } else {
-            return Integer.parseInt(partsPeor[0]) < Integer.parseInt(partsTiempo[0]);
-        }
-    }
-
     public static int convertirTiempoMs(String tiempo) {
         int m, s, ms;
 
@@ -130,54 +95,14 @@ public class PrincipalUtil {
         }
     }
     
-    public static AVG mejorAVG(int num) {
-        ArrayList <Solve> al = new ArrayList();
-        ArrayList <Solve> alMejores = new ArrayList();
-        int suma;
-        String mejoravg = "";
-        
-        for (Solve i : Principal.solves) {
-            al.add(i);
-            suma=0;
-            if (al.size()==num+1) {
-                al.remove(0);
-                String mejorTiempo = al.get(0).getTiempo();
-                String peorTiempo = al.get(0).getTiempo();
-                for (Solve j : al) {
-                    if (esMejorTiempo(mejorTiempo, j.getTiempo())) {
-                        mejorTiempo = j.getTiempo();
-                    }
-                    if (esPeorTiempo(peorTiempo, j.getTiempo())) {
-                        peorTiempo = j.getTiempo();
-                    }
-                    suma += convertirTiempoMs(j.getTiempo());
-                }
-                suma = suma - (convertirTiempoMs(mejorTiempo) + convertirTiempoMs(peorTiempo) );
-                if (esMejorTiempo(mejoravg, convertirMsTiempo(suma/(num - 2)))) {
-                    mejoravg = convertirMsTiempo(suma/(num - 2));
-                    alMejores = new ArrayList<Solve>(al);
-                }
-            }else{
-                if (al.size()==num) {
-                    String mejorTiempo = al.get(0).getTiempo();
-                    String peorTiempo = al.get(0).getTiempo();
-                    for (Solve j : al) {
-                        if (esMejorTiempo(mejorTiempo, j.getTiempo())) {
-                        mejorTiempo = j.getTiempo();
-                        }
-                        if (esPeorTiempo(peorTiempo, j.getTiempo())) {
-                            peorTiempo = j.getTiempo();
-                        }
-                        suma += convertirTiempoMs(j.getTiempo());
-                    }
-                    suma = suma - (convertirTiempoMs(mejorTiempo) + convertirTiempoMs(peorTiempo) );
-                    mejoravg = convertirMsTiempo(suma/(num - 2));
-                    alMejores = new ArrayList<Solve>(al);
-                }
-            }
-        }
-        AVG avg = new AVG(mejoravg, alMejores);
-        return avg;
+    public static String sumar2(String tiempo) {
+        int tiempoMs = convertirTiempoMs(tiempo);
+        return convertirMsTiempo(tiempoMs + 200);
+    }
+
+    public static String restar2(String tiempo) {
+        int tiempoMs = convertirTiempoMs(tiempo);
+        return convertirMsTiempo(tiempoMs - 200);
     }
     
     public static ComboBoxModel cargarModeloComboBox() {
@@ -193,6 +118,7 @@ public class PrincipalUtil {
         ComboBoxModel model = new javax.swing.DefaultComboBoxModel(sesiones);
         return model;
     }
+    
     public static String generarScramble() {
         Random rng = new Random();
         ArrayList<String> combinacion = new ArrayList<String>();
@@ -310,10 +236,135 @@ public class PrincipalUtil {
         
         return scramble;
     }
+    
+    public static void alinearPanelAside() {
+        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+        
+        int menuHeight = Principal.jMenuBar1.getHeight();
+        int panelHeight = Principal.jPanelAside.getHeight();
+        int px = pantalla.height - (menuHeight + panelHeight);
+        if (px > 0) {
+            Principal.jPanelGeneral.add(Principal.jPanelAside, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, Principal.jPanelAside.getWidth(), panelHeight + px));
+        }else if (px < 0) {
+            Principal.jPanelGeneral.add(Principal.jPanelAside, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, Principal.jPanelAside.getWidth(), panelHeight - px));
+        }
+    }
 
-    public static void actualizarTema(int tema, int opcion) {
+    public static void Error(String errorMessage) {
+        JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public static void cambiarIdioma(String nombreIdioma, int opcion){
+        Idioma idioma = new Idioma(nombreIdioma);
+        
         switch (opcion){
             case 0:
+                Principal.l_snombre.setText(idioma.getProperty("principal.sesion"));
+                Principal.l_total.setText(" " + idioma.getProperty("principal.total"));
+                Principal.l_best.setText(" " + idioma.getProperty("principal.mejor"));
+                Principal.l_worst.setText(" " + idioma.getProperty("principal.peor"));
+                Principal.l_totalavg.setText(" " + idioma.getProperty("principal.media"));
+                Principal.jMenu1.setText(idioma.getProperty("principal.opciones"));
+                Principal.m_addScramble.setText(idioma.getProperty("principal.scramble_personalizado"));
+                Principal.m_importar.setText(idioma.getProperty("principal.importar"));
+                Principal.m_exportar.setText(idioma.getProperty("principal.exportar"));
+                Principal.m_ant.setText(idioma.getProperty("principal.mezcla_anterior"));
+                Principal.m_sig.setText(idioma.getProperty("principal.nueva_mezcla"));
+                Principal.m_add.setText(idioma.getProperty("principal.agregar_tiempo"));
+                Principal.m_new.setText(idioma.getProperty("principal.nueva_sesion"));
+                Principal.m_info.setText(idioma.getProperty("principal.informacion_sesion"));
+                Principal.m_pref.setText(idioma.getProperty("principal.configuracion"));
+                Principal.m_cerrar.setText(idioma.getProperty("principal.cerrar"));
+                Principal.importError = idioma.getProperty("principal.importError");
+                break;
+            case 1:
+                InformacionSesion.l_nombre.setText(idioma.getProperty("informacionSesion.nombre"));
+                InformacionSesion.l_total.setText(idioma.getProperty("informacionSesion.total"));
+                InformacionSesion.l_mejor.setText(idioma.getProperty("informacionSesion.mejor"));
+                InformacionSesion.l_peor.setText(idioma.getProperty("informacionSesion.peor"));
+                InformacionSesion.l_avg.setText(idioma.getProperty("informacionSesion.media"));
+                InformacionSesion.l_desv.setText(idioma.getProperty("informacionSesion.desviacion"));
+                InformacionSesion.l_cao5.setText(idioma.getProperty("informacionSesion.ao5Actual"));
+                InformacionSesion.l_cao12.setText(idioma.getProperty("informacionSesion.ao12Actual"));
+                InformacionSesion.l_cao100.setText(idioma.getProperty("informacionSesion.ao100Actual"));
+                InformacionSesion.l_bao5.setText(idioma.getProperty("informacionSesion.mejorAo5"));
+                InformacionSesion.l_bao12.setText(idioma.getProperty("informacionSesion.mejorAo12"));
+                InformacionSesion.l_bao100.setText(idioma.getProperty("informacionSesion.mejorAo100"));
+                InformacionSesion.b_aceptar.setText(idioma.getProperty("informacionSesion.aceptar"));
+                InformacionSesion.b_eliminar.setText(idioma.getProperty("informacionSesion.eliminar"));
+                InformacionSesion.deleteError = idioma.getProperty("informacionSesion.deleteError");
+                InformacionSesion.renameError = idioma.getProperty("informacionSesion.renameError");
+                InformacionSesion.nameError = idioma.getProperty("informacionSesion.nameError");
+                InformacionSesion.nameMissingError = idioma.getProperty("informacionSesion.nameMissingError");
+                InformacionSesion.deleteConfirmation = idioma.getProperty("informacionSesion.deleteConfirmation");
+                break;
+            case 2:
+                InformacionSolve.l_id.setText(idioma.getProperty("informacionSolve.id"));
+                InformacionSolve.l_scramble.setText(idioma.getProperty("informacionSolve.scramble"));
+                InformacionSolve.l_fecha1.setText(idioma.getProperty("informacionSolve.fecha"));
+                InformacionSolve.l_fecha2.setText(idioma.getProperty("informacionSolve.hora"));
+                InformacionSolve.l_tiempo.setText(idioma.getProperty("informacionSolve.tiempo"));
+                InformacionSolve.b_aceptar.setText(idioma.getProperty("informacionSolve.aceptar"));
+                InformacionSolve.b_eliminar.setText(idioma.getProperty("informacionSolve.eliminar"));
+                InformacionSolve.saveError = idioma.getProperty("informacionSolve.saveError");
+                break;
+            case 3:
+                NuevaSesion.l_nombre.setText(idioma.getProperty("nuevaSesion.nombre"));
+                NuevaSesion.jButtonAceptar.setText(idioma.getProperty("nuevaSesion.aceptar"));
+                NuevaSesion.jButtonCancelar.setText(idioma.getProperty("nuevaSesion.cancelar"));
+                NuevaSesion.nameError = idioma.getProperty("nuevaSesion.nameError");
+                NuevaSesion.nameMissingError = idioma.getProperty("nuevaSesion.nameMissingError");
+                NuevaSesion.duplicateError = idioma.getProperty("nuevaSesion.duplicateError");
+                break;
+            case 4:
+                NuevoSolve.l_titulo.setText(idioma.getProperty("nuevoSolve.titulo"));
+                NuevoSolve.l_tiempo.setText(idioma.getProperty("nuevoSolve.tiempo"));
+                NuevoSolve.l_scramble.setText(idioma.getProperty("nuevoSolve.scramble"));
+                NuevoSolve.jButtonAceptar.setText(idioma.getProperty("nuevoSolve.aceptar"));
+                NuevoSolve.jButtonCancelar.setText(idioma.getProperty("nuevoSolve.cancelar"));
+                NuevoSolve.solveError = idioma.getProperty("nuevoSolve.solveError");
+                NuevoSolve.scrambleError = idioma.getProperty("nuevoSolve.scrambleError");
+                break;
+            case 5:
+                Preferencias.l_titulo.setText(idioma.getProperty("preferencias.titulo"));
+                Preferencias.l_temas.setText(idioma.getProperty("preferencias.tema"));
+                Preferencias.l_idioma.setText(idioma.getProperty("preferencias.idioma"));
+                Preferencias.jCheckBoxOcultarElementos.setText(idioma.getProperty("preferencias.ocultarTodo"));
+                Preferencias.jCheckBoxOcultar_preview.setText(idioma.getProperty("preferencias.ocultarPreview"));
+                Preferencias.jCheckBoxPulsacion_larga.setText(idioma.getProperty("preferencias.pulsacionLarga"));
+                Preferencias.jCheckBoxCrono_raton.setText(idioma.getProperty("preferencias.cronometroRaton"));
+                Preferencias.jCheckBoxTiempo_inspeccion.setText(idioma.getProperty("preferencias.inspeccion"));
+                Preferencias.l_segundos.setText(idioma.getProperty("preferencias.inspeccion.segundos"));
+                Preferencias.jButtonAceptar.setText(idioma.getProperty("preferencias.aceptar"));
+                Preferencias.jButton1Reset.setText(idioma.getProperty("preferencias.resetear"));
+                Preferencias.jButton1Cancelar.setText(idioma.getProperty("preferencias.cancelar"));
+                break;
+            case 6:
+                NuevoScramble.l_scramble.setText(idioma.getProperty("scramble.scramble"));
+                NuevoScramble.jButtonAceptar.setText(idioma.getProperty("scramble.aceptar"));
+                NuevoScramble.jButtonCancelar.setText(idioma.getProperty("scramble.cancelar"));
+                NuevoScramble.scrambleError = idioma.getProperty("scramble.error");
+                break;
+            case 7:
+                Exportar.l_titulo.setText(idioma.getProperty("exportar.titulo"));
+                Exportar.l_sesion.setText(idioma.getProperty("exportar.sesion"));
+                Exportar.l_carpeta.setText(idioma.getProperty("exportar.destino"));
+                Exportar.jButtonExaminar.setText(idioma.getProperty("exportar.examinar"));
+                Exportar.jButtonAceptar.setText(idioma.getProperty("exportar.aceptar"));
+                Exportar.jButtonCancelar.setText(idioma.getProperty("exportar.cancelar"));
+                Exportar.pathError = idioma.getProperty("exportar.pathError");
+                Exportar.exportError = idioma.getProperty("exportar.error");
+                break;
+        }
+    }
+
+    public static void actualizarTema(int tema, int opcion) {
+        int logoDimension = Validations.menorSize((Principal.pantalla.height * 90) / 1080, (Principal.pantalla.width * 90) / 1920);
+        int iconDimension = Validations.menorSize((Principal.pantalla.height * 30) / 1080, (Principal.pantalla.width * 30) / 1920);
+        
+        switch (opcion){
+            case 0:
+                Image newimg;
                 switch (tema){
                     case 1:
                         Principal.jPanelGeneral.setBackground(new java.awt.Color(205, 242, 154));
@@ -321,7 +372,6 @@ public class PrincipalUtil {
                         Principal.jPanelAside.setBackground(new java.awt.Color(255, 204, 204));
                         Principal.jPanelTiempos.setBackground(new java.awt.Color(255, 204, 204));
                         Principal.jPanelEstadisticas.setBackground(new java.awt.Color(255, 204, 204));
-                        Principal.jPanelPreview.setBackground(new java.awt.Color(205, 242, 154));
                         Principal.Listado.setBackground(new java.awt.Color(255, 204, 204));
                         
                         Principal.t_tiempo.setForeground(new java.awt.Color(51,51,51));
@@ -353,12 +403,14 @@ public class PrincipalUtil {
                         Principal.l_totalavg.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, 0, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
                         Principal.l_total_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
                         Principal.l_best_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
-                        Principal.l_worst_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_worst_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
                         Principal.l_ao5_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
                         Principal.l_ao100_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
                         Principal.l_ao12_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
                         Principal.l_totalavg_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, 0, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
                         Principal.jPanelTiempos.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(180, 180, 180), 1, true));
+                        
+                        Principal.l_fondo.setVisible(false);
                         break;
                     case 2:
                         Principal.jPanelGeneral.setBackground(new java.awt.Color(227, 227, 227));
@@ -366,7 +418,6 @@ public class PrincipalUtil {
                         Principal.jPanelAside.setBackground(new java.awt.Color(178, 178, 178));
                         Principal.jPanelTiempos.setBackground(new java.awt.Color(178, 178, 178));
                         Principal.jPanelEstadisticas.setBackground(new java.awt.Color(178, 178, 178));
-                        Principal.jPanelPreview.setBackground(new java.awt.Color(227, 227, 227));
                         Principal.Listado.setBackground(new java.awt.Color(178, 178, 178));
                         
                         Principal.t_tiempo.setForeground(new java.awt.Color(51,51,51));
@@ -404,6 +455,8 @@ public class PrincipalUtil {
                         Principal.l_ao12_2.setBorder(null);
                         Principal.l_totalavg_2.setBorder(null);
                         Principal.jPanelTiempos.setBorder(null);
+                        
+                        Principal.l_fondo.setVisible(false);
                         break;
                     case 3:
                         Principal.jPanelGeneral.setBackground(new java.awt.Color(53, 54, 58));
@@ -411,7 +464,6 @@ public class PrincipalUtil {
                         Principal.jPanelAside.setBackground(new java.awt.Color(33, 34, 38));
                         Principal.jPanelTiempos.setBackground(new java.awt.Color(33, 34, 38));
                         Principal.jPanelEstadisticas.setBackground(new java.awt.Color(33, 34, 38));
-                        Principal.jPanelPreview.setBackground(new java.awt.Color(53, 54, 58));
                         Principal.Listado.setBackground(new java.awt.Color(33, 34, 38));
                         
                         Principal.t_tiempo.setForeground(new java.awt.Color(233, 234, 237));
@@ -449,46 +501,138 @@ public class PrincipalUtil {
                         Principal.l_ao12_2.setBorder(null);
                         Principal.l_totalavg_2.setBorder(null);
                         Principal.jPanelTiempos.setBorder(null);
+                        
+                        Principal.l_fondo.setVisible(false);
+                        break;
+                    case 4:
+                        Principal.jPanelGeneral.setBackground(new java.awt.Color(205, 242, 154));
+                        Principal.jPanelScramble.setBackground(new java.awt.Color(255, 197, 160));
+                        Principal.jPanelAside.setBackground(new java.awt.Color(255, 197, 160));
+                        Principal.jPanelTiempos.setBackground(new java.awt.Color(255, 197, 160));
+                        Principal.jPanelEstadisticas.setBackground(new java.awt.Color(255, 197, 160));
+                        Principal.Listado.setBackground(new java.awt.Color(255, 197, 160));
+                        
+                        Principal.t_tiempo.setForeground(new java.awt.Color(255, 0, 243));
+                        Principal.l_scramble.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_snombre.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_total.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_best.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_worst.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_ao5.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_ao12.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_ao100.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_totalavg.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_total_2.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_best_2.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_worst_2.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_ao5_2.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_ao100_2.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_ao12_2.setForeground(new java.awt.Color(51,51,51));
+                        Principal.l_totalavg_2.setForeground(new java.awt.Color(51,51,51));
+                        Principal.Listado.setForeground(new java.awt.Color(51,51,51));
+                        Principal.colorTiempo = new java.awt.Color(255, 0, 243);
+                        
+                        Principal.l_total.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_best.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_worst.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_ao5.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_ao12.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_ao100.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, -1, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_totalavg.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 0, 0, -1), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_total_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_best_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_worst_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_ao5_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_ao100_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_ao12_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, -1, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.l_totalavg_2.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, -1, 0, 0), BorderFactory.createDashedBorder(new java.awt.Color(180, 180, 180), 5, 5)));
+                        Principal.jPanelTiempos.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(180, 180, 180), 1, true));
+                        
+                        Principal.l_fondo.setVisible(true);
                         break;
                 }
                 break;
             case 1:
+                ImageIcon iconLogo;
+                ImageIcon iconCerrar;
+                ImageIcon iconCerrarHover;
                 switch (tema){
                     case 1:
+                        
                         InformacionAVG.panelGeneral.setBackground(new java.awt.Color(238, 238, 238));
                         InformacionAVG.Listado.setBackground(new java.awt.Color(238, 238, 238));
-                        InformacionAVG.l_img.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo90x90.png")));
                         
                         InformacionAVG.l_nombre.setForeground(new java.awt.Color(51, 51, 51));
                         InformacionAVG.jScrollPane1.getVerticalScrollBar().setPreferredSize(new Dimension(17, 61));
                         InformacionAVG.Listado.setForeground(new java.awt.Color(51, 51, 51));
-                        InformacionAVG.l_cerrar.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png")));
-                        InformacionAVG.iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
-                        InformacionAVG.iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.l_img.setIcon(new ImageIcon(newimg));
+                        iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
+                        newimg = iconCerrar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.l_cerrar.setIcon(new ImageIcon(newimg));
+                        InformacionAVG.iconCerrar = new ImageIcon(newimg);
+                        iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+                        newimg = iconCerrarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.iconCerrarHover = new ImageIcon(newimg);
                         break;
                     case 2:
                         InformacionAVG.panelGeneral.setBackground(new java.awt.Color(178, 178, 178));
                         InformacionAVG.Listado.setBackground(new java.awt.Color(178, 178, 178));
-                        InformacionAVG.l_img.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-gris90x90.png")));
                         
                         InformacionAVG.l_nombre.setForeground(new java.awt.Color(51, 51, 51));
                         InformacionAVG.jScrollPane1.getVerticalScrollBar().setPreferredSize(new Dimension(17, 61));
                         InformacionAVG.Listado.setForeground(new java.awt.Color(51, 51, 51));
-                        InformacionAVG.l_cerrar.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png")));
-                        InformacionAVG.iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
-                        InformacionAVG.iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-gris90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.l_img.setIcon(new ImageIcon(newimg));
+                        iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
+                        newimg = iconCerrar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.l_cerrar.setIcon(new ImageIcon(newimg));
+                        InformacionAVG.iconCerrar = new ImageIcon(newimg);
+                        iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+                        newimg = iconCerrarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.iconCerrarHover = new ImageIcon(newimg);
                         break;
                     case 3:
                         InformacionAVG.panelGeneral.setBackground(new java.awt.Color(33, 34, 38));
                         InformacionAVG.Listado.setBackground(new java.awt.Color(33, 34, 38));
-                        InformacionAVG.l_img.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-negro90x90.png")));
                         
                         InformacionAVG.l_nombre.setForeground(new java.awt.Color(233, 234, 237));
                         InformacionAVG.jScrollPane1.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
                         InformacionAVG.Listado.setForeground(new java.awt.Color(233, 234, 237));
-                        InformacionAVG.l_cerrar.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-blanco.png")));
-                        InformacionAVG.iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-blanco.png"));
-                        InformacionAVG.iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-blanco-hover-gris.png"));
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-negro90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.l_img.setIcon(new ImageIcon(newimg));
+                        iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-blanco.png"));
+                        newimg = iconCerrar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.l_cerrar.setIcon(new ImageIcon(newimg));
+                        InformacionAVG.iconCerrar = new ImageIcon(newimg);
+                        iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-blanco-hover-gris.png"));
+                        newimg = iconCerrarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.iconCerrarHover = new ImageIcon(newimg);
+                        break;
+                    case 4:
+                        InformacionAVG.panelGeneral.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionAVG.Listado.setBackground(new java.awt.Color(255, 197, 160));
+                        
+                        InformacionAVG.l_nombre.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionAVG.jScrollPane1.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+                        InformacionAVG.Listado.setForeground(new java.awt.Color(51, 51, 51));
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-naranja90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.l_img.setIcon(new ImageIcon(newimg));
+                        iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
+                        newimg = iconCerrar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.l_cerrar.setIcon(new ImageIcon(newimg));
+                        InformacionAVG.iconCerrar = new ImageIcon(newimg);
+                        iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+                        newimg = iconCerrarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionAVG.iconCerrarHover = new ImageIcon(newimg);
                         break;
                 }
                 break;
@@ -496,7 +640,6 @@ public class PrincipalUtil {
                 switch (tema){
                     case 1:
                         InformacionSesion.jPanel1.setBackground(new java.awt.Color(238, 238, 238));
-                        InformacionSesion.l_img.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo90x90.png")));
                         
                         InformacionSesion.l_total.setForeground(new java.awt.Color(51, 51, 51));
                         InformacionSesion.t_total.setForeground(new java.awt.Color(51, 51, 51));
@@ -535,10 +678,13 @@ public class PrincipalUtil {
                         InformacionSesion.t_bao5.setBackground(new java.awt.Color(238, 238, 238));
                         InformacionSesion.t_bao12.setBackground(new java.awt.Color(238, 238, 238));
                         InformacionSesion.t_bao100.setBackground(new java.awt.Color(238, 238, 238));
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionSesion.l_img.setIcon(new ImageIcon(newimg));
                         break;
                     case 2:
                         InformacionSesion.jPanel1.setBackground(new java.awt.Color(178, 178, 178));
-                        InformacionSesion.l_img.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-gris90x90.png")));
                         
                         InformacionSesion.l_total.setForeground(new java.awt.Color(51, 51, 51));
                         InformacionSesion.t_total.setForeground(new java.awt.Color(51, 51, 51));
@@ -577,10 +723,13 @@ public class PrincipalUtil {
                         InformacionSesion.t_bao5.setBackground(new java.awt.Color(238, 238, 238));
                         InformacionSesion.t_bao12.setBackground(new java.awt.Color(238, 238, 238));
                         InformacionSesion.t_bao100.setBackground(new java.awt.Color(238, 238, 238));
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-gris90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionSesion.l_img.setIcon(new ImageIcon(newimg));
                         break;
                     case 3:
                         InformacionSesion.jPanel1.setBackground(new java.awt.Color(33, 34, 38));
-                        InformacionSesion.l_img.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-negro90x90.png")));
                         
                         InformacionSesion.l_total.setForeground(new java.awt.Color(233, 234, 237));
                         InformacionSesion.t_total.setForeground(new java.awt.Color(233, 234, 237));
@@ -619,6 +768,55 @@ public class PrincipalUtil {
                         InformacionSesion.t_bao5.setBackground(new java.awt.Color(33, 34, 38));
                         InformacionSesion.t_bao12.setBackground(new java.awt.Color(33, 34, 38));
                         InformacionSesion.t_bao100.setBackground(new java.awt.Color(33, 34, 38));
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-negro90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionSesion.l_img.setIcon(new ImageIcon(newimg));
+                        break;
+                    case 4:
+                        InformacionSesion.jPanel1.setBackground(new java.awt.Color(255, 197, 160));
+                        
+                        InformacionSesion.l_total.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_total.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_nombre.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_nombre.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_avg.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_avg.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_desv.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_desv.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_peor.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_peor.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_mejor.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_mejor.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_cao5.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_cao12.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_cao100.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_cao5.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_cao12.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_cao100.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_bao5.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_bao12.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.l_bao100.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_bao5.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_bao12.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSesion.t_bao100.setForeground(new java.awt.Color(51, 51, 51));
+                        
+                        InformacionSesion.t_total.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_nombre.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_avg.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_desv.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_peor.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_mejor.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_cao5.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_cao12.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_cao100.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_bao5.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_bao12.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSesion.t_bao100.setBackground(new java.awt.Color(255, 197, 160));
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-naranja90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionSesion.l_img.setIcon(new ImageIcon(newimg));
                         break;
                 }
                 break;
@@ -626,7 +824,6 @@ public class PrincipalUtil {
                 switch (tema){
                     case 1:
                         InformacionSolve.jPanel1.setBackground(new java.awt.Color(238, 238, 238));
-                        InformacionSolve.l_img.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo90x90.png")));
                         
                         InformacionSolve.l_fecha1.setForeground(new java.awt.Color(51, 51, 51));
                         InformacionSolve.l_fecha2.setForeground(new java.awt.Color(51, 51, 51));
@@ -650,10 +847,13 @@ public class PrincipalUtil {
                         InformacionSolve.t_id.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
                         InformacionSolve.t_scramble.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
                         InformacionSolve.t_tiempo.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionSolve.l_img.setIcon(new ImageIcon(newimg));
                         break;
                     case 2:
                         InformacionSolve.jPanel1.setBackground(new java.awt.Color(178, 178, 178));
-                        InformacionSolve.l_img.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-gris90x90.png")));
                         
                         InformacionSolve.l_fecha1.setForeground(new java.awt.Color(51, 51, 51));
                         InformacionSolve.l_fecha2.setForeground(new java.awt.Color(51, 51, 51));
@@ -677,10 +877,13 @@ public class PrincipalUtil {
                         InformacionSolve.t_id.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
                         InformacionSolve.t_scramble.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
                         InformacionSolve.t_tiempo.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-gris90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionSolve.l_img.setIcon(new ImageIcon(newimg));
                         break;
                     case 3:
                         InformacionSolve.jPanel1.setBackground(new java.awt.Color(33, 34, 38));
-                        InformacionSolve.l_img.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-negro90x90.png")));
                         
                         InformacionSolve.l_fecha1.setForeground(new java.awt.Color(233, 234, 237));
                         InformacionSolve.l_fecha2.setForeground(new java.awt.Color(233, 234, 237));
@@ -704,6 +907,40 @@ public class PrincipalUtil {
                         InformacionSolve.t_id.setBorder(null);
                         InformacionSolve.t_scramble.setBorder(null);
                         InformacionSolve.t_tiempo.setBorder(null);
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-negro90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionSolve.l_img.setIcon(new ImageIcon(newimg));
+                        break;
+                    case 4:
+                        InformacionSolve.jPanel1.setBackground(new java.awt.Color(255, 197, 160));
+                        
+                        InformacionSolve.l_fecha1.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSolve.l_fecha2.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSolve.l_tiempo.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSolve.l_id.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSolve.l_scramble.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSolve.t_fecha.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSolve.t_hora.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSolve.t_id.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSolve.t_scramble.setForeground(new java.awt.Color(51, 51, 51));
+                        InformacionSolve.t_tiempo.setForeground(new java.awt.Color(51, 51, 51));
+                        
+                        InformacionSolve.t_fecha.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSolve.t_hora.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSolve.t_id.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSolve.t_scramble.setBackground(new java.awt.Color(255, 197, 160));
+                        InformacionSolve.t_tiempo.setBackground(new java.awt.Color(255, 197, 160));
+                        
+                        InformacionSolve.t_fecha.setBorder(null);
+                        InformacionSolve.t_hora.setBorder(null);
+                        InformacionSolve.t_id.setBorder(null);
+                        InformacionSolve.t_scramble.setBorder(null);
+                        InformacionSolve.t_tiempo.setBorder(null);
+                        
+                        iconLogo = new ImageIcon(ClassLoader.getSystemResource("Imagenes/logo-naranja90x90.png"));
+                        newimg = iconLogo.getImage().getScaledInstance(logoDimension, logoDimension,  java.awt.Image.SCALE_SMOOTH);
+                        InformacionSolve.l_img.setIcon(new ImageIcon(newimg));
                         break;
                 }
                 break;
@@ -711,15 +948,19 @@ public class PrincipalUtil {
                 switch (tema){
                     case 1:
                         NuevaSesion.jPanel1.setBackground(new java.awt.Color(238, 238, 238));
-                        NuevaSesion.jLabel1.setForeground(new java.awt.Color(51, 51, 51));
+                        NuevaSesion.l_nombre.setForeground(new java.awt.Color(51, 51, 51));
                         break;
                     case 2:
                         NuevaSesion.jPanel1.setBackground(new java.awt.Color(178, 178, 178));
-                        NuevaSesion.jLabel1.setForeground(new java.awt.Color(51, 51, 51));
+                        NuevaSesion.l_nombre.setForeground(new java.awt.Color(51, 51, 51));
                         break;
                     case 3:
                         NuevaSesion.jPanel1.setBackground(new java.awt.Color(33, 34, 38));
-                        NuevaSesion.jLabel1.setForeground(new java.awt.Color(238, 238, 238));
+                        NuevaSesion.l_nombre.setForeground(new java.awt.Color(238, 238, 238));
+                        break;
+                    case 4:
+                        NuevaSesion.jPanel1.setBackground(new java.awt.Color(255, 197, 160));
+                        NuevaSesion.l_nombre.setForeground(new java.awt.Color(51, 51, 51));
                         break;
                 }
                 break;
@@ -746,6 +987,13 @@ public class PrincipalUtil {
                         NuevoSolve.l_tiempo.setForeground(new java.awt.Color(238, 238, 238));
                         NuevoSolve.l_titulo.setForeground(new java.awt.Color(238, 238, 238));
                         break;
+                    case 4:
+                        NuevoSolve.jPanel1.setBackground(new java.awt.Color(255, 197, 160));
+                        
+                        NuevoSolve.l_scramble.setForeground(new java.awt.Color(51,51,51));
+                        NuevoSolve.l_tiempo.setForeground(new java.awt.Color(51,51,51));
+                        NuevoSolve.l_titulo.setForeground(new java.awt.Color(51,51,51));
+                        break;
                 }
                 break;
             case 6:
@@ -755,108 +1003,144 @@ public class PrincipalUtil {
                         Preferencias.jPanelGeneral.setBackground(new java.awt.Color(255, 219, 219));
                         Preferencias.jPanelTitulo.setBackground(new java.awt.Color(255,179,179));
                         Preferencias.jPanelTemas.setBackground(new java.awt.Color(255, 219, 219));
-                        Preferencias.jPanelOcultarElementos.setBackground(new java.awt.Color(255,179,179));
-                        Preferencias.jPanelOcultarPreview.setBackground(new java.awt.Color(255, 219, 219));
-                        Preferencias.jPanelPulsacionLarga.setBackground(new java.awt.Color(255,179,179));
-                        Preferencias.jPanelCronoRaton.setBackground(new java.awt.Color(255, 219, 219));
-                        Preferencias.jPanelTiempo_inspeccion.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jPanelIdiomas.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jPanelOcultarElementos.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jPanelOcultarPreview.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jPanelPulsacionLarga.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jPanelCronoRaton.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jPanelTiempo_inspeccion.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jPanelSegundos_inspeccion.setBackground(new java.awt.Color(255,179,179));
                         
+                        Preferencias.l_idioma.setBackground(new java.awt.Color(255,179,179));
                         Preferencias.l_temas.setBackground(new java.awt.Color(255, 219, 219));
                         Preferencias.l_titulo.setBackground(new java.awt.Color(255,179,179));
-                        Preferencias.jRadioButtonTema1.setBackground(new java.awt.Color(255, 219, 219));
-                        Preferencias.jCheckBoxOcultarElementos.setBackground(new java.awt.Color(255,179,179));
-                        Preferencias.jRadioButtonTema2.setBackground(new java.awt.Color(255, 219, 219));
-                        Preferencias.jCheckBoxPulsacion_larga.setBackground(new java.awt.Color(255,179,179));
-                        Preferencias.jCheckBoxOcultar_preview.setBackground(new java.awt.Color(255, 219, 219));
-                        Preferencias.jCheckBoxTiempo_inspeccion.setBackground(new java.awt.Color(255,179,179));
-                        Preferencias.jCheckBoxCrono_raton.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jCheckBoxOcultarElementos.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jCheckBoxPulsacion_larga.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jCheckBoxOcultar_preview.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jCheckBoxTiempo_inspeccion.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jCheckBoxCrono_raton.setBackground(new java.awt.Color(255,179,179));
                         Preferencias.l_segundos.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.l_segundosInspeccion.setBackground(new java.awt.Color(255,179,179));
                         Preferencias.jPanelGeneral.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255,179,179)));
-                        Preferencias.jRadioButtonTema3.setBackground(new java.awt.Color(255, 219, 219));
                         
                         Preferencias.l_temas.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.l_idioma.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.l_titulo.setForeground(new java.awt.Color(51,51,51));
-                        Preferencias.jRadioButtonTema1.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.jCheckBoxOcultarElementos.setForeground(new java.awt.Color(51,51,51));
-                        Preferencias.jRadioButtonTema2.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.jCheckBoxPulsacion_larga.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.jCheckBoxOcultar_preview.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.jCheckBoxTiempo_inspeccion.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.jCheckBoxCrono_raton.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.l_segundos.setForeground(new java.awt.Color(51,51,51));
-                        Preferencias.jRadioButtonTema3.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.l_segundosInspeccion.setForeground(new java.awt.Color(51,51,51));
                         break;
                     case 2:
                         Preferencias.jPanelFondo.setBackground(new java.awt.Color(178, 178, 178));
                         Preferencias.jPanelGeneral.setBackground(new java.awt.Color(238, 238, 238));
                         Preferencias.jPanelTitulo.setBackground(new java.awt.Color(178, 178, 178));
                         Preferencias.jPanelTemas.setBackground(new java.awt.Color(238, 238, 238));
-                        Preferencias.jPanelOcultarElementos.setBackground(new java.awt.Color(178, 178, 178));
-                        Preferencias.jPanelOcultarPreview.setBackground(new java.awt.Color(238, 238, 238));
-                        Preferencias.jPanelPulsacionLarga.setBackground(new java.awt.Color(178, 178, 178));
-                        Preferencias.jPanelCronoRaton.setBackground(new java.awt.Color(238, 238, 238));
-                        Preferencias.jPanelTiempo_inspeccion.setBackground(new java.awt.Color(178, 178, 178));
+                        Preferencias.jPanelIdiomas.setBackground(new java.awt.Color(178, 178, 178));
+                        Preferencias.jPanelOcultarElementos.setBackground(new java.awt.Color(238, 238, 238));
+                        Preferencias.jPanelOcultarPreview.setBackground(new java.awt.Color(178, 178, 178));
+                        Preferencias.jPanelPulsacionLarga.setBackground(new java.awt.Color(238, 238, 238));
+                        Preferencias.jPanelCronoRaton.setBackground(new java.awt.Color(178, 178, 178));
+                        Preferencias.jPanelTiempo_inspeccion.setBackground(new java.awt.Color(238, 238, 238));
+                        Preferencias.jPanelSegundos_inspeccion.setBackground(new java.awt.Color(178, 178, 178));
                         
+                        Preferencias.l_idioma.setBackground(new java.awt.Color(178, 178, 178));
                         Preferencias.l_temas.setBackground(new java.awt.Color(238, 238, 238));
                         Preferencias.l_titulo.setBackground(new java.awt.Color(178, 178, 178));
-                        Preferencias.jRadioButtonTema1.setBackground(new java.awt.Color(238, 238, 238));
-                        Preferencias.jCheckBoxOcultarElementos.setBackground(new java.awt.Color(178, 178, 178));
-                        Preferencias.jRadioButtonTema2.setBackground(new java.awt.Color(238, 238, 238));
-                        Preferencias.jCheckBoxPulsacion_larga.setBackground(new java.awt.Color(178, 178, 178));
-                        Preferencias.jCheckBoxOcultar_preview.setBackground(new java.awt.Color(238, 238, 238));
-                        Preferencias.jCheckBoxTiempo_inspeccion.setBackground(new java.awt.Color(178, 178, 178));
-                        Preferencias.jCheckBoxCrono_raton.setBackground(new java.awt.Color(238, 238, 238));
+                        Preferencias.jCheckBoxOcultarElementos.setBackground(new java.awt.Color(238, 238, 238));
+                        Preferencias.jCheckBoxPulsacion_larga.setBackground(new java.awt.Color(238, 238, 238));
+                        Preferencias.jCheckBoxOcultar_preview.setBackground(new java.awt.Color(178, 178, 178));
+                        Preferencias.jCheckBoxTiempo_inspeccion.setBackground(new java.awt.Color(238, 238, 238));
+                        Preferencias.jCheckBoxCrono_raton.setBackground(new java.awt.Color(178, 178, 178));
                         Preferencias.l_segundos.setBackground(new java.awt.Color(178, 178, 178));
-                        Preferencias.jRadioButtonTema3.setBackground(new java.awt.Color(238, 238, 238));
+                        Preferencias.l_segundosInspeccion.setBackground(new java.awt.Color(178, 178, 178));
                         Preferencias.jPanelGeneral.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(178, 178, 178)));
                         
                         Preferencias.l_temas.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.l_idioma.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.l_titulo.setForeground(new java.awt.Color(51,51,51));
-                        Preferencias.jRadioButtonTema1.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.jCheckBoxOcultarElementos.setForeground(new java.awt.Color(51,51,51));
-                        Preferencias.jRadioButtonTema2.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.jCheckBoxPulsacion_larga.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.jCheckBoxOcultar_preview.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.jCheckBoxTiempo_inspeccion.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.jCheckBoxCrono_raton.setForeground(new java.awt.Color(51,51,51));
                         Preferencias.l_segundos.setForeground(new java.awt.Color(51,51,51));
-                        Preferencias.jRadioButtonTema3.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.l_segundosInspeccion.setForeground(new java.awt.Color(51,51,51));
                         break;
                     case 3:
                         Preferencias.jPanelFondo.setBackground(new java.awt.Color(33, 34, 38));
                         Preferencias.jPanelGeneral.setBackground(new java.awt.Color(53, 54, 58));
                         Preferencias.jPanelTitulo.setBackground(new java.awt.Color(33, 34, 38));
                         Preferencias.jPanelTemas.setBackground(new java.awt.Color(53, 54, 58));
-                        Preferencias.jPanelOcultarElementos.setBackground(new java.awt.Color(33, 34, 38));
-                        Preferencias.jPanelOcultarPreview.setBackground(new java.awt.Color(53, 54, 58));
-                        Preferencias.jPanelPulsacionLarga.setBackground(new java.awt.Color(33, 34, 38));
-                        Preferencias.jPanelCronoRaton.setBackground(new java.awt.Color(53, 54, 58));
-                        Preferencias.jPanelTiempo_inspeccion.setBackground(new java.awt.Color(33, 34, 38));
+                        Preferencias.jPanelIdiomas.setBackground(new java.awt.Color(33, 34, 38));
+                        Preferencias.jPanelOcultarElementos.setBackground(new java.awt.Color(53, 54, 58));
+                        Preferencias.jPanelOcultarPreview.setBackground(new java.awt.Color(33, 34, 38));
+                        Preferencias.jPanelPulsacionLarga.setBackground(new java.awt.Color(53, 54, 58));
+                        Preferencias.jPanelCronoRaton.setBackground(new java.awt.Color(33, 34, 38));
+                        Preferencias.jPanelTiempo_inspeccion.setBackground(new java.awt.Color(53, 54, 58));
+                        Preferencias.jPanelSegundos_inspeccion.setBackground(new java.awt.Color(33, 34, 38));
                         
+                        Preferencias.l_idioma.setBackground(new java.awt.Color(33, 34, 38));
                         Preferencias.l_temas.setBackground(new java.awt.Color(53, 54, 58));
                         Preferencias.l_titulo.setBackground(new java.awt.Color(33, 34, 38));
-                        Preferencias.jRadioButtonTema1.setBackground(new java.awt.Color(53, 54, 58));
-                        Preferencias.jCheckBoxOcultarElementos.setBackground(new java.awt.Color(33, 34, 38));
-                        Preferencias.jRadioButtonTema2.setBackground(new java.awt.Color(53, 54, 58));
-                        Preferencias.jCheckBoxPulsacion_larga.setBackground(new java.awt.Color(33, 34, 38));
-                        Preferencias.jCheckBoxOcultar_preview.setBackground(new java.awt.Color(53, 54, 58));
-                        Preferencias.jCheckBoxTiempo_inspeccion.setBackground(new java.awt.Color(33, 34, 38));
-                        Preferencias.jCheckBoxCrono_raton.setBackground(new java.awt.Color(53, 54, 58));
+                        Preferencias.jCheckBoxOcultarElementos.setBackground(new java.awt.Color(53, 54, 58));
+                        Preferencias.jCheckBoxPulsacion_larga.setBackground(new java.awt.Color(53, 54, 58));
+                        Preferencias.jCheckBoxOcultar_preview.setBackground(new java.awt.Color(33, 34, 38));
+                        Preferencias.jCheckBoxTiempo_inspeccion.setBackground(new java.awt.Color(53, 54, 58));
+                        Preferencias.jCheckBoxCrono_raton.setBackground(new java.awt.Color(33, 34, 38));
                         Preferencias.l_segundos.setBackground(new java.awt.Color(33, 34, 38));
-                        Preferencias.jRadioButtonTema3.setBackground(new java.awt.Color(53, 54, 58));
-                        Preferencias.jPanelGeneral.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(33, 34, 38)));
+                        Preferencias.l_segundosInspeccion.setBackground(new java.awt.Color(33, 34, 38));
+                        Preferencias.jPanelGeneral.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(53, 54, 58)));
                         
                         Preferencias.l_temas.setForeground(new java.awt.Color(238, 238, 238));
+                        Preferencias.l_idioma.setForeground(new java.awt.Color(238, 238, 238));
                         Preferencias.l_titulo.setForeground(new java.awt.Color(238, 238, 238));
-                        Preferencias.jRadioButtonTema1.setForeground(new java.awt.Color(238, 238, 238));
                         Preferencias.jCheckBoxOcultarElementos.setForeground(new java.awt.Color(238, 238, 238));
-                        Preferencias.jRadioButtonTema2.setForeground(new java.awt.Color(238, 238, 238));
                         Preferencias.jCheckBoxPulsacion_larga.setForeground(new java.awt.Color(238, 238, 238));
                         Preferencias.jCheckBoxOcultar_preview.setForeground(new java.awt.Color(238, 238, 238));
                         Preferencias.jCheckBoxTiempo_inspeccion.setForeground(new java.awt.Color(238, 238, 238));
                         Preferencias.jCheckBoxCrono_raton.setForeground(new java.awt.Color(238, 238, 238));
                         Preferencias.l_segundos.setForeground(new java.awt.Color(238, 238, 238));
-                        Preferencias.jRadioButtonTema3.setForeground(new java.awt.Color(238, 238, 238));
+                        Preferencias.l_segundosInspeccion.setForeground(new java.awt.Color(238, 238, 238));
+                        break;
+                    case 4:
+                        Preferencias.jPanelFondo.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jPanelGeneral.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jPanelTitulo.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jPanelTemas.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jPanelIdiomas.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jPanelOcultarElementos.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jPanelOcultarPreview.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jPanelPulsacionLarga.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jPanelCronoRaton.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jPanelTiempo_inspeccion.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jPanelSegundos_inspeccion.setBackground(new java.awt.Color(255,179,179));
+                        
+                        Preferencias.l_idioma.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.l_temas.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.l_titulo.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jCheckBoxOcultarElementos.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jCheckBoxPulsacion_larga.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jCheckBoxOcultar_preview.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jCheckBoxTiempo_inspeccion.setBackground(new java.awt.Color(255, 219, 219));
+                        Preferencias.jCheckBoxCrono_raton.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.l_segundos.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.l_segundosInspeccion.setBackground(new java.awt.Color(255,179,179));
+                        Preferencias.jPanelGeneral.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255,179,179)));
+                        
+                        Preferencias.l_temas.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.l_idioma.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.l_titulo.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.jCheckBoxOcultarElementos.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.jCheckBoxPulsacion_larga.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.jCheckBoxOcultar_preview.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.jCheckBoxTiempo_inspeccion.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.jCheckBoxCrono_raton.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.l_segundos.setForeground(new java.awt.Color(51,51,51));
+                        Preferencias.l_segundosInspeccion.setForeground(new java.awt.Color(51,51,51));
                         break;
                 }
                 break;
@@ -864,21 +1148,47 @@ public class PrincipalUtil {
                 switch (tema){
                     case 1:
                         ScramblePreview.panelGeneral.setBackground(new java.awt.Color(238, 238, 238));
-                        ScramblePreview.l_cerrar.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png")));
-                        ScramblePreview.iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
-                        ScramblePreview.iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+                        
+                        iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
+                        newimg = iconCerrar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        ScramblePreview.l_cerrar.setIcon(new ImageIcon(newimg));
+                        ScramblePreview.iconCerrar = new ImageIcon(newimg);
+                        iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+                        newimg = iconCerrarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        ScramblePreview.iconCerrarHover = new ImageIcon(newimg);
                         break;
                     case 2:
                         ScramblePreview.panelGeneral.setBackground(new java.awt.Color(178, 178, 178));
-                        ScramblePreview.l_cerrar.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png")));
-                        ScramblePreview.iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
-                        ScramblePreview.iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+                        
+                        iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
+                        newimg = iconCerrar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        ScramblePreview.l_cerrar.setIcon(new ImageIcon(newimg));
+                        ScramblePreview.iconCerrar = new ImageIcon(newimg);
+                        iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+                        newimg = iconCerrarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        ScramblePreview.iconCerrarHover = new ImageIcon(newimg);
                         break;
                     case 3:
                         ScramblePreview.panelGeneral.setBackground(new java.awt.Color(33, 34, 38));
-                        ScramblePreview.l_cerrar.setIcon(new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-blanco.png")));
-                        ScramblePreview.iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-blanco.png"));
-                        ScramblePreview.iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-blanco-hover-gris.png"));
+                        
+                        iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-blanco.png"));
+                        newimg = iconCerrar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        ScramblePreview.l_cerrar.setIcon(new ImageIcon(newimg));
+                        ScramblePreview.iconCerrar = new ImageIcon(newimg);
+                        iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-blanco-hover-gris.png"));
+                        newimg = iconCerrarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        ScramblePreview.iconCerrarHover = new ImageIcon(newimg);
+                        break;
+                    case 4:
+                        ScramblePreview.panelGeneral.setBackground(new java.awt.Color(255, 197, 160));
+                        
+                        iconCerrar = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar.png"));
+                        newimg = iconCerrar.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        ScramblePreview.l_cerrar.setIcon(new ImageIcon(newimg));
+                        ScramblePreview.iconCerrar = new ImageIcon(newimg);
+                        iconCerrarHover = new ImageIcon(ClassLoader.getSystemResource("Imagenes/cerrar-hover-gris.png"));
+                        newimg = iconCerrarHover.getImage().getScaledInstance(iconDimension, iconDimension,  java.awt.Image.SCALE_SMOOTH);
+                        ScramblePreview.iconCerrarHover = new ImageIcon(newimg);
                         break;
                 }
                 break;
@@ -886,32 +1196,51 @@ public class PrincipalUtil {
                 switch (tema){
                     case 1:
                         NuevoScramble.panelGeneral.setBackground(new java.awt.Color(238, 238, 238));
-                        NuevoScramble.jLabel1.setForeground(new java.awt.Color(51,51,51));
+                        NuevoScramble.l_scramble.setForeground(new java.awt.Color(51,51,51));
                         break;
                     case 2:
                         NuevoScramble.panelGeneral.setBackground(new java.awt.Color(178, 178, 178));
-                        NuevoScramble.jLabel1.setForeground(new java.awt.Color(51,51,51));
+                        NuevoScramble.l_scramble.setForeground(new java.awt.Color(51,51,51));
                         break;
                     case 3:
                         NuevoScramble.panelGeneral.setBackground(new java.awt.Color(33, 34, 38));
-                        NuevoScramble.jLabel1.setForeground(new java.awt.Color(238, 238, 238));
+                        NuevoScramble.l_scramble.setForeground(new java.awt.Color(238, 238, 238));
+                        break;
+                    case 4:
+                        NuevoScramble.panelGeneral.setBackground(new java.awt.Color(255, 197, 160));
+                        NuevoScramble.l_scramble.setForeground(new java.awt.Color(51,51,51));
+                        break;
+                }
+                break;
+            case 9:
+                switch (tema){
+                    case 1:
+                        Exportar.panelGeneral.setBackground(new java.awt.Color(238, 238, 238));
+                        Exportar.l_titulo.setForeground(new java.awt.Color(51,51,51));
+                        Exportar.l_carpeta.setForeground(new java.awt.Color(51,51,51));
+                        Exportar.l_sesion.setForeground(new java.awt.Color(51,51,51));
+                        break;
+                    case 2:
+                        Exportar.panelGeneral.setBackground(new java.awt.Color(178, 178, 178));
+                        Exportar.l_titulo.setForeground(new java.awt.Color(51,51,51));
+                        Exportar.l_carpeta.setForeground(new java.awt.Color(51,51,51));
+                        Exportar.l_sesion.setForeground(new java.awt.Color(51,51,51));
+                        break;
+                    case 3:
+                        Exportar.panelGeneral.setBackground(new java.awt.Color(33, 34, 38));
+                        Exportar.l_titulo.setForeground(new java.awt.Color(238, 238, 238));
+                        Exportar.l_carpeta.setForeground(new java.awt.Color(238, 238, 238));
+                        Exportar.l_sesion.setForeground(new java.awt.Color(238, 238, 238));
+                        break;
+                    case 4:
+                        Exportar.panelGeneral.setBackground(new java.awt.Color(255, 197, 160));
+                        Exportar.l_titulo.setForeground(new java.awt.Color(51,51,51));
+                        Exportar.l_carpeta.setForeground(new java.awt.Color(51,51,51));
+                        Exportar.l_sesion.setForeground(new java.awt.Color(51,51,51));
                         break;
                 }
                 break;
         }
         
-    }
-
-    public static void alinearPanelAside() {
-        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
-        
-        int menuHeight = Principal.jMenuBar1.getHeight();
-        int panelHeight = Principal.jPanelAside.getHeight();
-        int px = pantalla.height - (menuHeight + panelHeight);
-        if (px > 0) {
-            Principal.jPanelGeneral.add(Principal.jPanelAside, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, Principal.jPanelAside.getWidth(), panelHeight + px));
-        }else if (px < 0) {
-            Principal.jPanelGeneral.add(Principal.jPanelAside, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, Principal.jPanelAside.getWidth(), panelHeight - px));
-        }
     }
 }
